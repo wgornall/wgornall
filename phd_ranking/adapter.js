@@ -1,10 +1,14 @@
-/* Load only the generated public release. A failed load never falls back to
- * synthetic examples or to confidential source files. */
+/* Load the compact table first. Person-level records follow in the background. */
 window.createAppMiddleware = async function () {
   if (window.PHD_PLACEMENT_MIDDLEWARE) return window.PHD_PLACEMENT_MIDDLEWARE;
-  const response = await fetch('./placement-data.json');
-  if (!response.ok) throw new Error(`Unable to load the dataset (HTTP ${response.status}).`);
-  const data = await response.json();
-  const { createMiddleware } = await import('./placement-middleware.mjs');
-  return createMiddleware(data);
+  const [{createProgressiveMiddleware}, response] = await Promise.all([
+    import('./placement-middleware.mjs'), fetch('./placement-summary.json')
+  ]);
+  if (!response.ok) throw new Error(`Unable to load the ranking summary (HTTP ${response.status}).`);
+  const summary = await response.json();
+  return createProgressiveMiddleware(summary, async () => {
+    const response = await fetch('./placement-data.json');
+    if (!response.ok) throw new Error(`Unable to load faculty details (HTTP ${response.status}).`);
+    return response.json();
+  });
 };

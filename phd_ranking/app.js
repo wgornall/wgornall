@@ -10,35 +10,43 @@
     return rounded === '-0.0' ? '0.0' : rounded;
   };
   const contributionText = value => value == null ? '—' : value > 0 && value < 0.005 ? '<0.01' : value.toFixed(2);
+  const appointmentLabel = g => (g.destinationLabel || g.destination.short_name || g.destination.name) + ({past:' (past)',past_unverified:' (past, unverified)',unverified:' (unverified)'}[g.displayStatus] || (g.displayStatus ? '' : g.currentAffiliationVerified === false ? ' (unverified)' : ''));
   const safeURL = value => { try { const u = new URL(value); return ['https:','http:'].includes(u.protocol) ? u.href : null; } catch { return null; } };
   let middleware, options, result, state = {}, requestNumber = 0;
-  const SCORE_WINDOWS = [10, 20, 'all'];
-  const INSTITUTION_LIMIT = 100;
+  const SCORE_WINDOWS = [2015, 2005, 'all'];
+  const SOURCE_WINDOWS = [2015];
+  const SOURCE_EXPORT_WINDOWS = [2015, 2005, 'all'];
+  const DEFAULT_WINDOW = 2015;
+  const PAGE_SIZES = [20, 50, 100];
+  let tablePage = 0, pageSize = 20;
+  let coverageTrigger = null;
   const SOURCE_IDS = [];
   const scoreText = decimal;
   const mainScoreText = value => value == null ? '—' : number(Math.round(value));
   const rankText = value => value == null ? '—' : `#${value}`;
-  const subIndexText = (value, status) => status === 'suppressed' ? '*' : value > 100 ? '-' : rankText(value);
+  const subIndexText = (value, status) => status === 'suppressed' ? '*' : rankText(value);
   const sourceValueText = (row, id) => row.isUnit ? '' : subIndexText(row.sourceRanks?.[id], row.sourceStatuses?.[id]);
   const countryFlag = school => /^[A-Z]{2}$/.test(school.country_code || '') ? String.fromCodePoint(...[...school.country_code].map(letter => 0x1F1E6 + letter.charCodeAt(0) - 65)) : '';
   const rankMarkup = label => label.replace(/^#/, '<sup class="rank-prefix">#</sup>');
-  const MINIMUM_CELL_MESSAGE = 'Censored due to minimum cell size suppression';
+  const MINIMUM_CELL_MESSAGE = 'Suppressed as <3 tracked graduates';
   const minimumCellSuppressed = row => !row.isUnit && row.allTimeGraduateCount < 3;
-  const windowLabel = years => years === 'all' ? 'All years' : `Last ${years} years`;
+  const windowLabel = years => years === 'all' ? 'All years' : `${years}+`;
+  const sourceWindowLabel = years => years === 'all' ? 'All' : `’${String(years).slice(-2)}+`;
   const cohortLabel = cohort => cohort.years === 'all' ? `All observed years through ${cohort.endYear}` : `${cohort.startYear}–${cohort.endYear}`;
-  let sort = { key: 'score:10', descending: true }, query = '';
+  let sort = { key: `score:${DEFAULT_WINDOW}`, descending: true }, query = '';
   let windowResults = new Map();
   const expanded = new Set();
   let lastDialogTrigger = null;
   const overviewCache = new Map();
-  const PAGE_SECTIONS = ['results','data','methodology','limitations','conflicts','corrections','remove-your-data'];
+  const PAGE_SECTIONS = ['results','decade-panel','previous-panel','data','methodology','limitations','conflicts','corrections','remove-your-data'];
 
   function readHash() {
     const p = new URLSearchParams(location.hash.slice(1));
     const next = { ...options.defaults };
     next.mode = 'average_score_weighted';
     if (options.universes.some(x => x.id === p.get('universe'))) next.universe = p.get('universe');
-    const years = p.get('years') === 'all' ? 'all' : Number(p.get('years'));
+    const requestedYears = p.get('years') === 'all' ? 'all' : Number(p.get('years'));
+    const years = requestedYears === 10 ? 2015 : requestedYears === 20 ? 2005 : requestedYears;
     if (SCORE_WINDOWS.includes(years)) next.years = years;
     if (options.appointments.some(x => x.id === p.get('appointment'))) next.appointment = p.get('appointment');
     return next;
@@ -56,11 +64,11 @@
   function buildControls() {
     SOURCE_IDS.splice(0, SOURCE_IDS.length, ...(options.sourceColumns || []).map(s => s.id));
     document.querySelectorAll('[data-source-column]').forEach(node => node.remove());
-    $('.rankings-table colgroup').insertAdjacentHTML('beforeend', SOURCE_IDS.flatMap(() => SCORE_WINDOWS.map(() => '<col class="source-col" data-source-column/>')).join(''));
-    $('.metric-group-row').insertAdjacentHTML('beforeend', SOURCE_IDS.map(id =>
-      `<th class="metric-group-heading source-group-heading source-group-start" colspan="3" scope="colgroup" data-source-column><button class="metric-sort-button" type="button" data-sort-default="sub:${escape(id)}:10" aria-label="Sort by ${escape(sourceName(id))} rank for the last 10 years">${escape(sourceHeading(id))}</button></th>`).join(''));
-    $('.table-heading-row').insertAdjacentHTML('beforeend', SOURCE_IDS.flatMap(id => SCORE_WINDOWS.map((years,index) =>
-      `<th class="source-col${index===0?' source-group-start':''}" scope="col" aria-sort="none" data-source-column><button class="sort-button" data-sort="sub:${escape(id)}:${years}">${years==='all'?'All':`${years}y`} <span class="sort-indicator" aria-hidden="true">↕</span></button></th>`)).join(''));
+    $('.rankings-table colgroup').insertAdjacentHTML('beforeend', SOURCE_IDS.flatMap(() => SOURCE_WINDOWS.map(() => '<col class="source-col" data-source-column/>')).join(''));
+    $('.metric-group-row').insertAdjacentHTML('beforeend', SOURCE_IDS.map((id,sourceIndex) =>
+      `<th class="metric-group-heading source-group-heading${sourceIndex===0?' source-group-start':''}" scope="col" data-source-column><button class="metric-sort-button" type="button" data-sort-default="sub:${escape(id)}:${DEFAULT_WINDOW}" aria-label="Sort by ${escape(sourceName(id))} rank for graduates from 2015 onward">${escape(sourceHeading(id))}</button></th>`).join(''));
+    $('.table-heading-row').insertAdjacentHTML('beforeend', SOURCE_IDS.flatMap((id,sourceIndex) => SOURCE_WINDOWS.map(years =>
+      `<th class="source-col${sourceIndex===0?' source-group-start':''}" scope="col" aria-sort="none" data-source-column><button class="sort-button" data-sort="sub:${escape(id)}:${years}" aria-label="Sort by ${escape(sourceName(id))} rank for graduates from 2015 onward">’15+ <span class="sort-indicator" aria-hidden="true">↑</span></button></th>`)).join(''));
     $('.rankings-table').classList.toggle('has-subscores', SOURCE_IDS.length > 0);
     $('#universe-controls').innerHTML = radioButtons(options.universes, 'universe');
     syncControls();
@@ -133,8 +141,9 @@
   }
   function renderDataOverview(overview) {
     const stanfordAnnual = overview?.metaRanking?.find(row => row.school.school_id === 'stanford_university')?.metaScore;
-    $('#stanford-example-annual').textContent = Number.isFinite(stanfordAnnual) ? stanfordAnnual.toFixed(1) : '—';
-    $('#data-download').disabled = typeof middleware.getPublicData !== 'function';
+    const stanfordExample = $('#stanford-example-annual');
+    if (stanfordExample) stanfordExample.textContent = Number.isFinite(stanfordAnnual) ? stanfordAnnual.toFixed(1) : '—';
+    $('#data-download').disabled = typeof middleware.getPublicData !== 'function' || middleware.isFullDataReady?.() === false;
     if (!overview || overview.error) {
       $('#data-download-note').textContent = overview?.error || 'Data inventory unavailable.';
       return;
@@ -147,6 +156,7 @@
     const button = $('#data-download'); button.disabled = true;
     try {
       const payload = await middleware.getPublicData();
+      if (result?.detailsPending) { overviewCache.clear(); await refresh(); }
       const blob = new Blob([JSON.stringify(payload,null,2)+'\n'], {type:'application/json;charset=utf-8'});
       const url = URL.createObjectURL(blob), link = document.createElement('a');
       link.href = url;
@@ -169,9 +179,7 @@
   function visibleRows() {
     if (!result) return [];
     const needle = query.trim().toLocaleLowerCase();
-    const rows = result.rows.filter(row => row.windows['10'].rank != null && row.windows['10'].hasScore && row.windows['10'].score > 0.25)
-      .filter(row => { const rank = displayedRank(row); return rank != null && rank <= INSTITUTION_LIMIT; })
-      .filter(row => !needle || [row.school.name,row.school.short_name,row.school.city,row.school.business_school,row.school.country,row.school.region,...(row.units || []).map(unit => unit.school.name)].some(x => String(x || '').toLocaleLowerCase().includes(needle)));
+    const rows = result.rows.filter(row => !needle || [row.school.name,row.school.short_name,row.school.city,row.school.business_school,row.school.country,row.school.region,...(row.units || []).map(unit => unit.school.name)].some(x => String(x || '').toLocaleLowerCase().includes(needle)));
     const numericValue = row => {
       if (sort.key === 'graduates') return row.allTimeGraduateCount;
       if (sort.key === 'rank') return row.rank;
@@ -191,14 +199,28 @@
       }
       return (sort.descending ? -difference : difference) || a.school.name.localeCompare(b.school.name);
     });
-    return rows.slice(0, INSTITUTION_LIMIT);
+    return rows;
+  }
+  function pageRows(rows) {
+    const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
+    tablePage = Math.max(0, Math.min(tablePage, pageCount - 1));
+    return rows.slice(tablePage * pageSize, (tablePage + 1) * pageSize);
+  }
+  function renderPagination(total) {
+    const pages = Math.max(1, Math.ceil(total / pageSize));
+    const start = total ? tablePage * pageSize + 1 : 0;
+    const end = Math.min(total, (tablePage + 1) * pageSize);
+    $('#table-page-status').textContent = `${number(start)}–${number(end)} of ${number(total)} universities · Page ${tablePage + 1} of ${pages}`;
+    for (const id of ['#table-page-prev', '#table-page-prev-top']) $(id).disabled = tablePage === 0;
+    for (const id of ['#table-page-next', '#table-page-next-top']) $(id).disabled = tablePage >= pages - 1;
+    $('#table-page-size').value = String(pageSize);
   }
   const defaultSubunitSchools = new Set(window.PHD_SITE_CONFIG?.defaultExpandedSubunitSchools || []);
   const hiddenRankingSubunits = new Set(window.PHD_SITE_CONFIG?.hiddenRankingSubunits || []);
   const alwaysShownRankingSubunits = new Set(window.PHD_SITE_CONFIG?.alwaysShownRankingSubunits || []);
   function displayedUnits(row) {
     if (!defaultSubunitSchools.has(row.school.school_id)) return [];
-    return (row.units || []).filter(unit => (alwaysShownRankingSubunits.has(unit.school.school_id) || unit.windows['10'].hasScore && unit.windows['10'].score > 0.25) && unit.school.show_in_rankings !== false && !hiddenRankingSubunits.has(unit.school.school_id))
+    return (row.units || []).filter(unit => (alwaysShownRankingSubunits.has(unit.school.school_id) || unit.windows[String(DEFAULT_WINDOW)].hasScore && unit.windows[String(DEFAULT_WINDOW)].score > 0.25) && unit.school.show_in_rankings !== false && !hiddenRankingSubunits.has(unit.school.school_id))
       .sort((a, b) => (a.school.display_order || 0) - (b.school.display_order || 0) || a.school.name.localeCompare(b.school.name));
   }
   const flattenedRows = () => visibleRows().flatMap(row => [row,...displayedUnits(row)]);
@@ -227,7 +249,7 @@
   };
   const regionLabel = school => school.country_code === 'US' ? 'US' : school.country_code === 'CA' ? 'Canada' : school.region || school.country || '—';
   const sourceName = id => options.sourceColumns?.find(s => s.id === id)?.name || id.toUpperCase();
-  const sourceHeading = id => `Σ dest. ${({ 'U.S. News': 'USN', 'UT Dallas': 'UTD' })[sourceName(id)] || sourceName(id)} scores`;
+  const sourceHeading = id => ({'U.S. News': 'USN', 'UT Dallas': 'UTD'})[sourceName(id)] || sourceName(id);
   function updateFrozenColumns() {
     const table = $('.rankings-table'), scroller = $('.table-scroll');
     const first = table?.querySelector('thead .rank-col');
@@ -238,19 +260,23 @@
     table.style.setProperty('--table-viewport-width', `${scroller.clientWidth}px`);
   }
   function renderTable() {
-    const rows = visibleRows();
+    const coverage = $('#coverage-popover');
+    if (coverage?.matches?.(':popover-open')) coverage.hidePopover();
+    const matchingRows = visibleRows();
+    const rows = pageRows(matchingRows);
     $('#rankings-body').innerHTML = rows.length ? rows.map(row => {
       const sid = row.school.school_id;
       return renderProgram(row, sid) + displayedUnits(row).map(unit => renderProgram(unit, sid)).join('') +
-        (expanded.has(sid) ? `<tr class="detail-row" id="detail-${escape(sid)}" data-detail-for="${escape(sid)}"><td colspan="${6 + 3*SOURCE_IDS.length}">${renderGraduates(row)}</td></tr>` : '');
-    }).join('') : `<tr><td colspan="${6 + 3*SOURCE_IDS.length}"><div class="empty-state"><strong>No matching programs</strong>Try another origin universe. This table shows up to 100 institutions scoring above 0.25 on the last-10-years Top-3s/year at destination.</div></td></tr>`;
-    $('#program-count').textContent = number(rows.length);
-    $('#export-button').disabled = !rows.length;
+        (expanded.has(sid) ? `<tr class="detail-row" id="detail-${escape(sid)}" data-detail-for="${escape(sid)}"><td colspan="${3 + SCORE_WINDOWS.length + SOURCE_WINDOWS.length*SOURCE_IDS.length}">${renderGraduates(row)}</td></tr>` : '');
+    }).join('') : `<tr><td colspan="${3 + SCORE_WINDOWS.length + SOURCE_WINDOWS.length*SOURCE_IDS.length}"><div class="empty-state"><strong>No matching programs</strong>Try another origin universe or search term.</div></td></tr>`;
+    $('#program-count').textContent = number(matchingRows.length);
+    $('#export-button').disabled = !matchingRows.length;
+    renderPagination(matchingRows.length);
     for (const button of document.querySelectorAll('[data-sort]')) {
       const active = button.dataset.sort === sort.key;
       button.closest('th').classList.toggle('active-score-column', active);
       button.closest('th').setAttribute('aria-sort', active ? (sort.descending ? 'descending' : 'ascending') : 'none');
-      button.querySelector('.sort-indicator').textContent = active ? (sort.descending ? '↓' : '↑') : '↕';
+      button.querySelector('.sort-indicator').textContent = active ? (sort.descending ? '↓' : '↑') : (button.dataset.sort === 'rank' || button.dataset.sort.startsWith('sub:') ? '↑' : '↓');
     }
     for (const years of SCORE_WINDOWS) {
       const header = $(`[data-score-window="${years}"]`);
@@ -284,9 +310,9 @@
     const sid = row.school.school_id, open = expanded.has(groupId), hasUnits = displayedUnits(row).length > 0;
     const rank = displayedRank(row);
     const sourceCells = minimumCellSuppressed(row)
-      ? `<td colspan="${3*SOURCE_IDS.length}" class="minimum-cell-suppression source-group-start">${MINIMUM_CELL_MESSAGE}</td>`
-      : SOURCE_IDS.flatMap(id => SCORE_WINDOWS.map((years,index) => {
-      const start=(index===0?' source-group-start':'') + (sort.key === `sub:${id}:${years}` ? ' active-score-column' : '');
+      ? `<td colspan="${SOURCE_WINDOWS.length*SOURCE_IDS.length}" class="minimum-cell-suppression source-group-start">${MINIMUM_CELL_MESSAGE}</td>`
+      : SOURCE_IDS.flatMap((id,sourceIndex) => SOURCE_WINDOWS.map((years,index) => {
+      const start=(sourceIndex===0&&index===0?' source-group-start':'') + (sort.key === `sub:${id}:${years}` ? ' active-score-column' : '');
       if (row.isUnit) return `<td class="source-cell${start}" data-source="${id}" data-source-years="${years}"></td>`;
       const metric=row.windows[String(years)];
       const status = metric.sourceStatuses?.[id] || 'unavailable';
@@ -304,6 +330,10 @@
     </tr>`;
   }
   function renderGraduates(row) {
+    if (typeof middleware !== 'undefined' && middleware.isFullDataReady?.() === false) {
+      const error = middleware.getDetailLoadError?.();
+      return `<section class="detail-panel"><p role="status">${error ? 'Faculty details could not be loaded.' : 'Loading graduate details…'}</p>${error ? '<button class="text-button" data-retry-details>Retry details</button>' : ''}</section>`;
+    }
     const sid = row.school.school_id;
     const placements = row.windows.all;
     const grads = placements.graduates;
@@ -311,10 +341,11 @@
     return `<section class="detail-panel" aria-label="University placements from ${escape(row.school.name)}">
       <div class="detail-top"><div><h3>${escape(row.school.name)} · placements</h3><p>${number(placements.graduateCount)} graduates · ${number(placements.destinationCount)} destinations · ${escape(appointment)}${row.units?.length ? ' · all doctoral units, counted once' : ''}</p></div><button class="detail-close" data-expand="${escape(sid)}" aria-label="Collapse ${escape(row.school.name)} placements">Collapse −</button></div>
       <div class="detail-table-scroll"><table class="graduates-table"><caption class="sr-only">University placements, labeled by doctoral unit. Destination scores precede contribution adjustments.</caption><thead><tr><th scope="col">Graduate</th><th scope="col">Source</th><th scope="col">PhD</th><th scope="col">Doctoral unit</th><th scope="col">Selected appointment</th><th scope="col">Top-3s/year at destination</th></tr></thead><tbody>
-      ${grads.length ? grads.map(g => `<tr><td><span class="graduate-name">${escape(g.name)}</span></td><td class="evidence-cell"><button class="evidence-button" data-evidence="${escape(g.facultyId)}" data-origin="${escape(sid)}">Evidence ↗</button></td><td>${g.phdYear ?? 'Undated'}</td><td class="doctoral-unit">${escape(g.originUnit ? unitLabel(g.originUnit, row.school) : '-')}${g.creditWeight < 1 ? `<span class="job-title">Joint PhD · ${Math.round(100 * g.creditWeight)}% credit</span>` : ''}</td><td><span>${escape(g.destination.short_name || g.destination.name)}</span>${g.isSelfPlacement ? `<span class="job-title">Self placement${g.selfPlacementFactor < 1 ? ` · ${Math.round(100 * g.selfPlacementFactor)}% of input after cap` : ''}</span>` : ''}${g.incompleteBest ? '<span class="job-title">Best appointment cannot be fully scored.</span>' : ''}</td><td class="contribution">${contributionText(g.destinationInput)}</td></tr>`).join('') : '<tr><td colspan="6">No observed qualifying placements are supplied for this institution.</td></tr>'}
+      ${grads.length ? grads.map(g => `<tr${g.eligibleForCredit === false || g.outsideDestinationSample ? ' class="unscored-placement"' : ''}><td><span class="graduate-name">${escape(g.name)}</span></td><td class="evidence-cell"><button class="evidence-button" data-evidence="${escape(g.facultyId)}" data-origin="${escape(sid)}">Evidence ↗</button></td><td>${g.phdYear ?? 'Undated'}</td><td class="doctoral-unit">${escape(g.originUnit ? unitLabel(g.originUnit, row.school) : '-')}${g.creditWeight < 1 ? `<span class="job-title">Joint PhD · ${Math.round(100 * g.creditWeight)}% credit</span>` : ''}</td><td><span>${escape(appointmentLabel(g))}</span>${g.isSelfPlacement ? `<span class="job-title">Self placement${g.selfPlacementFactor < 1 ? ` · ${Math.round(100 * g.selfPlacementFactor)}% of input after cap` : ''}</span>` : ''}${g.incompleteBest ? '<span class="job-title">Best appointment cannot be fully scored.</span>' : ''}</td><td class="contribution">${['past','past_unverified'].includes(g.displayStatus) ? '-' : g.eligibleForCredit === false || g.outsideDestinationSample || g.destinationInput === 0 ? '<button class="coverage-trigger" type="button" popovertarget="coverage-popover" data-coverage aria-label="Why this destination is not covered">not covered<sup>*</sup></button>' : contributionText(g.destinationInput)}</td></tr>`).join('') : '<tr><td colspan="6">No observed qualifying placements are supplied for this institution.</td></tr>'}
       </tbody></table></div>
+      ${grads.some(g => !['past','past_unverified'].includes(g.displayStatus) && (g.eligibleForCredit === false || g.outsideDestinationSample || g.destinationInput === 0)) ? '<p class="detail-bottom"><sup>*</sup> Excellent small finance departments that do not meet our total publication cutoffs, economics departments, and top central banks are not covered. <a href="#methodology">Refer to the methodology</a>.</p>' : ''}
 
-      <p class="detail-bottom">All observed years, including undated records. Destination scores are shown before joint-degree credit and self-placement adjustments; credited contributions appear under Evidence.${result.meta.is_synthetic ? ' Synthetic records.' : ''}</p>
+      <p class="detail-bottom">All observed years, including undated records. Past-only listings show “-”. Unverified, non-finance, and unranked current listings show “not covered”. These listings use normal type and receive no points. “Past, unverified” means the placement-list job is historical and current status is unresolved. Destination scores are shown before joint-degree credit and self-placement adjustments; credited contributions appear under Evidence.${result.meta.is_synthetic ? ' Synthetic records.' : ''}</p>
     </section>`;
   }
   function openDialog(kicker, html, trigger) {
@@ -328,7 +359,7 @@
     const g = findRow(sid)?.windows.all.graduates.find(x => x.facultyId === id);
     if (!g) return;
     const sourceBlock = (title, sources) => `<section class="evidence-block"><h3>${title}</h3>${sources.length ? sources.map(s => `<blockquote>${escape(s.snapshot || s.excerpt || 'No source excerpt supplied.')}</blockquote>${safeURL(s.url) ? `<a class="dialog-source-link" href="${escape(safeURL(s.url))}" target="_blank" rel="noopener noreferrer">Open source ↗</a>` : ''}`).join('') : '<p>No source supplied for this record.</p>'}</section>`;
-    openDialog(g.isSynthetic ? 'SYNTHETIC RECORD / EVIDENCE' : 'GRADUATE / EVIDENCE', `<h2 id="dialog-title">${escape(g.name)}</h2><p>${g.isSynthetic ? 'Fictional demonstration record.' : 'Supplied PhD and appointment evidence.'}</p><div class="evidence-meta"><div><strong>DOCTORAL ORIGIN</strong>${escape(g.originUnit?.name || g.origin.name)} · ${g.phdYear ?? 'Undated'}</div><div><strong>SELECTED DESTINATION</strong>${escape(g.destination.name)}</div><div><strong>APPOINTMENT RULE</strong>${escape(optionLabel(options.appointments,state.appointment))}</div><div><strong>SCORE CONTRIBUTION</strong>${contributionText(g.contribution)}${g.isSelfPlacement ? ` · Self placement${g.selfPlacementFactor < 1 ? ` · ${Math.round(100 * g.selfPlacementFactor)}% of input after cap` : ''}` : ''}${g.creditWeight < 1 ? ` · ${Math.round(100 * g.creditWeight)}% joint-degree credit` : ''} · ${escape(result.mode.shortLabel)}</div></div>${sourceBlock('Doctoral education',g.evidence.phd)}${sourceBlock('Academic appointment',g.evidence.job)}${safeURL(g.cvUrl) ? `<a class="dialog-source-link" href="${escape(safeURL(g.cvUrl))}" target="_blank" rel="noopener noreferrer">Open faculty CV ↗</a>` : ''}`, trigger);
+    openDialog(g.isSynthetic ? 'SYNTHETIC RECORD / EVIDENCE' : 'GRADUATE / EVIDENCE', `<h2 id="dialog-title">${escape(g.name)}</h2><p>${g.isSynthetic ? 'Fictional demonstration record.' : 'Supplied PhD and appointment evidence.'}</p><div class="evidence-meta"><div><strong>DOCTORAL ORIGIN</strong>${escape(g.originUnit?.name || g.origin.name)} · ${g.phdYear ?? 'Undated'}</div><div><strong>SELECTED DESTINATION</strong>${escape(appointmentLabel(g))}</div><div><strong>APPOINTMENT RULE</strong>${escape(optionLabel(options.appointments,state.appointment))}</div><div><strong>SCORE CONTRIBUTION</strong>${g.eligibleForCredit === false || g.outsideDestinationSample ? '0 · Listing receives no ranking points' : contributionText(g.contribution)}${g.isSelfPlacement ? ` · Self placement${g.selfPlacementFactor < 1 ? ` · ${Math.round(100 * g.selfPlacementFactor)}% of input after cap` : ''}` : ''}${g.creditWeight < 1 ? ` · ${Math.round(100 * g.creditWeight)}% joint-degree credit` : ''} · ${escape(result.mode.shortLabel)}</div></div>${sourceBlock('Doctoral education',g.evidence.phd)}${sourceBlock('Academic appointment',g.evidence.job)}${safeURL(g.cvUrl) ? `<a class="dialog-source-link" href="${escape(safeURL(g.cvUrl))}" target="_blank" rel="noopener noreferrer">Open faculty CV ↗</a>` : ''}`, trigger);
   }
   function goToSection(id) {
     const target = document.getElementById(id);
@@ -342,7 +373,7 @@
     $('#result-summary').textContent = 'The dataset could not be loaded.';
     $('#program-count').textContent = '—';
     $('#data-warning').hidden = true;
-    $('#rankings-body').innerHTML = `<tr><td colspan="${6 + 3*SOURCE_IDS.length}"><div class="empty-state"><strong>Unable to load rankings</strong>${escape(error.message || 'Unknown data error')}<br><button class="error-retry" data-retry>Try again</button></div></td></tr>`;
+    $('#rankings-body').innerHTML = `<tr><td colspan="${3 + SCORE_WINDOWS.length + SOURCE_WINDOWS.length*SOURCE_IDS.length}"><div class="empty-state"><strong>Unable to load rankings</strong>${escape(error.message || 'Unknown data error')}<br><button class="error-retry" data-retry>Try again</button></div></td></tr>`;
     $('#export-button').disabled = true;
     $('#status').textContent = `Error: ${error.message}`;
   }
@@ -353,16 +384,16 @@
       if (text !== '-' && /^[\s]*[=+@-]/.test(text)) text = `'${text}`;
       return `"${text.replace(/"/g,'""')}"`;
     };
-    const groupHeaders = ['Rank', 'Doctoral Institution, Location', 'Σ Top-3s/year at destinations', '', '', '# grads',
-      ...SOURCE_IDS.flatMap(id => [sourceHeading(id),'',''])];
-    const columnHeaders = ['', '', '10y', '20y', 'All', 'tracked',
-      ...SOURCE_IDS.flatMap(() => ['10y','20y','All'])];
+    const groupHeaders = ['Rank', 'PhD Granter, Location', 'Σ Top-3s/year at destinations', ...Array(SCORE_WINDOWS.length - 1).fill(''), '# grads',
+      ...SOURCE_IDS.flatMap(id => [sourceHeading(id), ...Array(SOURCE_EXPORT_WINDOWS.length - 1).fill('')])];
+    const columnHeaders = ['', '', ...SCORE_WINDOWS.map(windowLabel), 'All',
+      ...SOURCE_IDS.flatMap(() => SOURCE_EXPORT_WINDOWS.map(sourceWindowLabel))];
     const lines = [groupHeaders, columnHeaders, ...rows.map(r => [
       r.isUnit ? '' : displayedRankText(r),
       `${programLabel(r)}${r.isUnit ? '' : ` ${locationLabel(r.school)}`}`,
       ...SCORE_WINDOWS.map(years => mainScoreText(r.windows[String(years)].displayScore)),
       number(r.allTimeGraduateCount),
-      ...(minimumCellSuppressed(r) ? [MINIMUM_CELL_MESSAGE, ...Array(3*SOURCE_IDS.length-1).fill('')] : SOURCE_IDS.flatMap(id => SCORE_WINDOWS.map(years => {
+      ...(minimumCellSuppressed(r) ? [MINIMUM_CELL_MESSAGE, ...Array(SOURCE_EXPORT_WINDOWS.length*SOURCE_IDS.length-1).fill('')] : SOURCE_IDS.flatMap(id => SOURCE_EXPORT_WINDOWS.map(years => {
         const metric = r.windows[String(years)];
         const sourceRow = {isUnit: r.isUnit, sourceRanks: metric.sourceRanks, sourceStatuses: metric.sourceStatuses};
         return sourceValueText(sourceRow, id);
@@ -374,6 +405,14 @@
     link.download = `finance-placement-${state.appointment}-${state.universe}-all-periods${result.meta.is_synthetic ? '-SYNTHETIC' : ''}.csv`;
     document.body.append(link); link.click(); link.remove();
     setTimeout(() => URL.revokeObjectURL(url),1000);
+  }
+  function positionCoverage() {
+    const popover = $('#coverage-popover');
+    if (!coverageTrigger?.isConnected || !popover.matches(':popover-open')) return;
+    const trigger = coverageTrigger.getBoundingClientRect(), box = popover.getBoundingClientRect();
+    popover.style.left = `${Math.max(10,Math.min(trigger.right - box.width,innerWidth - box.width - 10))}px`;
+    const below = trigger.bottom + 8;
+    popover.style.top = `${Math.max(10,Math.min(below + box.height <= innerHeight - 10 ? below : trigger.top - box.height - 8,innerHeight - box.height - 10))}px`;
   }
   function closeRegion(restoreFocus = false) {
     $('#region-menu').hidden = true;
@@ -387,6 +426,9 @@
     menu.style.left = `${Math.max(10,Math.min(trigger.left,innerWidth - rect.width - 10))}px`;
     menu.style.top = `${Math.max(10,Math.min(trigger.bottom + 8,innerHeight - rect.height - 10))}px`;
   }
+  $('#coverage-popover').addEventListener('toggle',event => { if (event.newState === 'open') positionCoverage(); });
+  window.addEventListener('resize',positionCoverage);
+  document.addEventListener('scroll',positionCoverage,true);
   $('#region-filter').addEventListener('click',() => {
     const open = $('#region-menu').hidden;
     $('#region-menu').hidden = !open;
@@ -400,9 +442,13 @@
   window.addEventListener('resize',positionRegion);
   document.addEventListener('scroll',positionRegion,true);
   document.addEventListener('click',event => {
+    const coverage = event.target.closest('[data-coverage]');
+    if (coverage) { coverageTrigger = coverage; return; }
+    if (event.target.closest('#coverage-popover [data-section]')) $('#coverage-popover').hidePopover();
     if (!event.target.closest('#region-menu') && !event.target.closest('#region-filter')) closeRegion();
     const radio = event.target.closest('button[data-key]');
     if (radio && options) {
+      tablePage = 0;
       state[radio.dataset.key] = radio.dataset.key === 'years' && radio.dataset.value !== 'all' ? Number(radio.dataset.value) : radio.dataset.value;
       if (radio.dataset.key === 'universe') closeRegion(true);
       if (radio.dataset.key === 'years') sort = { key: `score:${state.years}`, descending: true };
@@ -423,6 +469,7 @@
     if (evidence) { showEvidence(evidence.dataset.evidence,evidence.dataset.origin,evidence); return; }
     const sortButton = event.target.closest('[data-sort],[data-sort-default]');
     if (sortButton) {
+      tablePage = 0;
       const key = sortButton.dataset.sort || sortButton.dataset.sortDefault;
       sort = { key, descending: key !== 'rank' && !key.startsWith('sub:') };
       if (key.startsWith('score:') || key.startsWith('sub:')) {
@@ -434,6 +481,7 @@
     }
     const sectionLink = event.target.closest('[data-section]');
     if (sectionLink && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) { event.preventDefault(); goToSection(sectionLink.dataset.section); return; }
+    if (event.target.closest('[data-retry-details]')) { loadFacultyDetails(); return; }
     if (event.target.closest('[data-retry]')) initialize();
   });
   document.addEventListener('keydown',event => {
@@ -444,6 +492,15 @@
     const buttons = [...group.querySelectorAll('[role="radio"]')], current = buttons.indexOf(document.activeElement);
     let next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : (current + (['ArrowLeft','ArrowUp'].includes(event.key) ? -1 : 1) + buttons.length) % buttons.length;
     buttons[next].focus(); buttons[next].click();
+  });
+  $('#table-page-size').addEventListener('change',event => {
+    const requested = Number(event.target.value);
+    if (!PAGE_SIZES.includes(requested)) return;
+    pageSize = requested; tablePage = 0; renderTable();
+  });
+  for (const id of ['#table-page-prev', '#table-page-prev-top']) $(id).addEventListener('click',() => { if (tablePage > 0) { tablePage--; renderTable(); } });
+  for (const id of ['#table-page-next', '#table-page-next-top']) $(id).addEventListener('click',() => {
+    if ((tablePage + 1) * pageSize < visibleRows().length) { tablePage++; renderTable(); }
   });
   $('#export-button').addEventListener('click',exportCSV);
   $('#data-download').addEventListener('click',downloadPublicData);
@@ -460,6 +517,14 @@
     if (PAGE_SECTIONS.includes(section)) { goToSection(section); return; }
     if (options) { state = readHash(); sort = { key: `score:${state.years}`, descending: true }; refresh(); }
   });
+  async function loadFacultyDetails() {
+    try {
+      await middleware.loadFullData(); overviewCache.clear(); await refresh();
+    } catch (error) {
+      $('#data-download-note').textContent = 'Faculty details could not be loaded. The ranking table remains available.';
+      renderTable();
+    }
+  }
   async function initialize() {
     try {
       middleware = await window.createAppMiddleware();
@@ -469,6 +534,7 @@
       const section = location.hash.slice(1);
       state = readHash(); sort = { key: `score:${state.years}`, descending: true };
       buildControls(); await refresh();
+      if (typeof middleware.loadFullData === 'function') loadFacultyDetails();
       if (PAGE_SECTIONS.includes(section)) goToSection(section);
     } catch (error) { showError(error); }
   }

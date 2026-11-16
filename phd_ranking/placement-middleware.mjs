@@ -1,5 +1,8 @@
 /** Real draft data adapter for the v5 presentation contract. No provider raw
  * scores are accepted here: destinations use the two precomputed meta inputs. */
+// Numeric calendar years are inclusive graduation cutoffs; 10/20 remain legacy API windows.
+export const GRADUATION_WINDOWS = [2015, 2005, 'all'];
+const LEGACY_WINDOWS = [10, 20];
 const REGIONS = [
   { id: 'all', label: 'All' }, { id: 'us', label: 'US' },
   { id: 'intl', label: 'Intl' }, { id: 'canada', label: 'Canada' },
@@ -202,16 +205,78 @@ export function createMiddleware(data) {
   const options = { meta: data.meta, modes, universes: REGIONS, appointments: APPOINTMENTS, sourceColumns,
     minimumCellSize: minimumCellSize || null,
     compositePolicy: data.program_ranking_metadata?.composite_policy || null,
-    defaults: { mode: 'average_score_weighted', universe: 'all', years: 10, appointment: 'current' } };
+    scoreWindows: [...GRADUATION_WINDOWS], sourceWindows: [2015, 2005, 'all'],
+    defaults: { mode: 'average_score_weighted', universe: 'all', years: 2015, appointment: 'current' } };
   const weight = (mode, id) => inputs.get(mode).get((universityOf(id).scoring_name || universityOf(id).name).trim()) ?? null;
   const isCurrent = role => role.is_current !== false && (role.end_year == null || role.end_year >= data.meta.as_of_year);
+  const currentAffiliationVerified = role => {
+    if (typeof role.current_affiliation_verified === 'boolean') return role.current_affiliation_verified;
+    if (['unresolved','unresolved_current_status'].includes(role.appointment_review_status) || role.website_verification_status === 'pending') return false;
+    const supported = ['website_supported', 'supported', 'verified'].includes(role.appointment_review_status) ||
+      ['website_listing_supported', 'official_current_listing_supported', 'website_supported'].includes(role.affiliation_status) ||
+      ['supported_by_reviewed_website', 'verified', 'website_supported'].includes(role.website_verification_status);
+    return supported && role.sources?.some(s => s.extraction_status === 'verified' && s.source_url && s.source_snapshot) || false;
+  };
   const evidence = sources => (sources || []).flatMap(s => {
     const urls = typeof s.source_url === 'string' ? s.source_url.split(/;\s*(?=https?:\/\/)/i) : [s.source_url];
     return urls.map(url => ({ ...s, source_url: url, url, snapshot: s.source_snapshot,
       ...(urls.length > 1 ? {combined_source_url: s.source_url} : {}) }));
   });
 
+  const strictValidation = data.program_ranking_metadata?.current_appointment_validation?.enabled === true;
+  const financeUnitVerified = role => {
+    if (role.finance_unit_eligibility === false) return false;
+    if (role.finance_unit_eligibility === true) return true;
+    const unit = String(role.reported_unit_names || '');
+    const namesFinanceUnit = /finance|banking|financial economics|金融/i.test(unit);
+    // Use the appointment unit, never the graduate's doctoral subject.
+    if (!namesFinanceUnit && /(?:department|section)\s+(?:of\s+)?(?:economics|accounting|accountancy|real estate|econometrics|mathematics|statistics)|global economies and markets/i.test(unit)) return false;
+    return role.research_finance_scope_status === 'supported' ||
+      /^(include|eligible)/.test(role.appointment_inclusion_review || '') || namesFinanceUnit ||
+      // Legacy reviewed finance rosters can have a blank unit text field.
+      role.field === 'finance' && currentAffiliationVerified(role) && !/^(exclude|unresolved)/.test(role.appointment_inclusion_review || '') ||
+      role.sources?.some(s => s.extraction_status === 'verified' && (/finance.{0,65}(department|directory|faculty|appointment)|(?:department|institute|center|centre).{0,65}finance/i.test(s.source_snapshot || '') || /\/(?:departments?\/finance|finance\/(?:faculty|people|staff))/i.test(s.source_url || '')));
+  };
+  const destinationLabel = (destination, job) => {
+    const unit = String(job.reported_unit_names || ''), title = String(job.position_title || '');
+    const name = destination.school_id === 'harvard_university' && /harvard medical school/i.test(unit) ? 'Harvard Medical School' : destination.short_name || destination.name;
+    const text = `${unit} ${title}`;
+    const suffix = financeUnitVerified(job) ? '' : /biomedical informatics/i.test(text) ? 'Biomedical Informatics' : /account(?:ing|ancy)/i.test(text) ? 'Accounting' : /econometrics/i.test(text) ? 'Econometrics' : /economics|economic policy|global economies/i.test(text) ? 'Econ' : /statistics|mathematics/i.test(text) ? 'Math/Stats' : /real estate|land economy/i.test(text) ? 'Real Estate' : /strategy|entrepreneur/i.test(text) ? 'Strategy' : /operations research.*financial engineering|\bORFE\b/i.test(text) ? 'ORFE' : /technology|operations/i.test(text) ? 'Operations' : /computer science/i.test(text) ? 'Computer Science' : /management/i.test(text) ? 'Management' : job.finance_unit_eligibility === false ? 'non-finance' : '';
+    const type = String(job.appointment_type || '').toLowerCase();
+    const roleLabel = /postdoc/.test(type) || /\bpost[ -]?doc(?:toral)?\b/i.test(title) ? 'postdoc' : /visit/.test(type) || /\bvisiting\b/i.test(title) ? 'visiting' : /emerit/.test(type) || /\bemerit(?:us|a)\b/i.test(title) ? 'emeritus' : /courtesy/.test(type) || /\bby courtesy\b/i.test(title) ? 'courtesy' : /adjunct/.test(type) || /\badjunct\b/i.test(title) ? 'adjunct' : /teaching|instruction/.test(type) || /\b(?:of teaching|of instruction)\b/i.test(title) ? 'teaching' : '';
+    return `${name}${suffix ? ` ${suffix}` : ''}${roleLabel ? ` (${roleLabel})` : ''}`;
+  };
+  const eligibleAppointment = role => isEligibleFacultyJob(role, data.meta.as_of_year) && financeUnitVerified(role) &&
+    !/^(exclude|unresolved)/.test(role.appointment_inclusion_review || '') && role.eligible_for_credit !== false;
+  const qualifiesForCredit = role => currentAffiliationVerified(role) && isCurrent(role) && eligibleAppointment(role) &&
+    inDestinationSample(universityOf(role.school_id));
+  function chooseDisplayedJob(person, roles) {
+    const jobs = roles.filter(r => r.role_type === 'job' && (r.start_year == null || r.start_year <= data.meta.as_of_year));
+    const current = jobs.filter(r => isCurrent(r) && currentAffiliationVerified(r));
+    if (current.length) {
+      current.sort((a,b) => Number(qualifiesForCredit(b)) - Number(qualifiesForCredit(a)) ||
+        Number(eligibleAppointment(b)) - Number(eligibleAppointment(a)) ||
+        Number(isEligibleFacultyJob({...b,finance_unit_eligibility:true},data.meta.as_of_year)) - Number(isEligibleFacultyJob({...a,finance_unit_eligibility:true},data.meta.as_of_year)) ||
+        (weight('average_score_weighted',b.school_id) ?? -Infinity) - (weight('average_score_weighted',a.school_id) ?? -Infinity) ||
+        Number(b.is_primary === true) - Number(a.is_primary === true) || (b.start_year || 0) - (a.start_year || 0) || a.role_id.localeCompare(b.role_id));
+      return {job:current[0],incompleteBest:false,displayStatus:'current',eligibleForCredit:qualifiesForCredit(current[0])};
+    }
+    const history = [...(person.placement_history || [])].filter(h => h.destination_name && h.sources?.some(s=>s.source_url && s.source_snapshot));
+    history.sort((a,b)=>(b.year_as_reported || 0)-(a.year_as_reported || 0) || a.placement_id.localeCompare(b.placement_id));
+    if (history.length) {
+      const h=history[0];
+      return {job:{role_id:h.placement_id,school_id:h.school_id,position_title:h.position_title,start_year:null,end_year:null,sources:h.sources},
+        history:h,incompleteBest:false,eligibleForCredit:false,displayStatus:person.current_status_verified ? 'past' : 'past_unverified'};
+    }
+    if (jobs.length) {
+      jobs.sort((a,b)=>(b.start_year || 0)-(a.start_year || 0) || a.role_id.localeCompare(b.role_id));
+      const job=jobs[0];
+      return {job,incompleteBest:false,eligibleForCredit:false,displayStatus:isCurrent(job) ? 'unverified' : person.current_status_verified ? 'past' : 'past_unverified'};
+    }
+    return null;
+  }
   function chooseJob(person, roles, config, diagnostics) {
+    if (strictValidation && config.appointment !== 'first') return chooseDisplayedJob(person, roles);
     const jobs = roles.filter(r => isEligibleFacultyJob(r, data.meta.as_of_year));
     if (!jobs.length) { diagnostics.noQualifyingJob++; return null; }
     if (config.appointment === 'first') {
@@ -225,13 +290,15 @@ export function createMiddleware(data) {
     if (config.appointment === 'current') {
       const current = jobs.filter(isCurrent);
       if (!current.length) { diagnostics.noCurrentJob++; return null; }
-      current.sort((a, b) => (weight(config.mode, b.school_id) ?? -Infinity) - (weight(config.mode, a.school_id) ?? -Infinity) ||
+      current.sort((a, b) => Number(inDestinationSample(universityOf(b.school_id))) - Number(inDestinationSample(universityOf(a.school_id))) ||
+        (weight(config.mode, b.school_id) ?? -Infinity) - (weight(config.mode, a.school_id) ?? -Infinity) ||
         Number(b.is_primary === true) - Number(a.is_primary === true) || (b.start_year || 0) - (a.start_year || 0) || a.role_id.localeCompare(b.role_id));
       return { job: current[0], incompleteBest: false };
     }
     const scored = jobs.map(job => ({ job, value: weight(config.mode, job.school_id) }));
-    scored.sort((a, b) => (b.value ?? -Infinity) - (a.value ?? -Infinity) || a.job.role_id.localeCompare(b.job.role_id));
-    return { job: scored[0].job, incompleteBest: scored.some(r => r.value === null) };
+    scored.sort((a, b) => Number(inDestinationSample(universityOf(b.job.school_id))) - Number(inDestinationSample(universityOf(a.job.school_id))) ||
+      (b.value ?? -Infinity) - (a.value ?? -Infinity) || a.job.role_id.localeCompare(b.job.role_id));
+    return { job: scored[0].job, incompleteBest: scored.some(r => inDestinationSample(universityOf(r.job.school_id)) && r.value === null) };
   }
 
   const selfPlacementRule = data.program_ranking_metadata?.self_placements;
@@ -257,9 +324,11 @@ export function createMiddleware(data) {
   async function getRankings(request = {}) {
     const config = { ...options.defaults, ...request };
     if (!inputs.has(config.mode) || !REGIONS.some(r => r.id === config.universe) ||
-        ![10, 20, 'all'].includes(config.years) || !APPOINTMENTS.some(r => r.id === config.appointment)) throw new Error('Invalid ranking filter.');
+        ![...GRADUATION_WINDOWS, ...LEGACY_WINDOWS].includes(config.years) || !APPOINTMENTS.some(r => r.id === config.appointment)) throw new Error('Invalid ranking filter.');
     if (config.mode === recursiveMode) await prepareRecursiveWeights();
-    const endYear = data.meta.as_of_year, startYear = config.years === 'all' ? null : endYear - config.years + 1;
+    const endYear = data.meta.as_of_year;
+    const startYear = config.years === 'all' ? null
+      : LEGACY_WINDOWS.includes(config.years) ? endYear - config.years + 1 : config.years;
     const diagnostics = { missingPhd: 0, ambiguousPhd: 0, missingYear: 0, unverifiedPhd: 0, outsideCohort: 0, undatedIncluded: 0,
       noQualifyingJob: 0, noCurrentJob: 0, ambiguousAppointment: 0, missingJobDates: 0, unverifiedFirst: 0, missingScore: 0,
       outsideDestinationSample: 0, selfPlacementsAdjusted: 0 };
@@ -274,11 +343,17 @@ export function createMiddleware(data) {
         // earlier doctorate merely because the latest falls outside a cohort.
         const completed = phds.filter(r => r.end_year == null || r.end_year <= endYear);
         const candidates = completed.length ? completed : phds;
-        if (candidates.some(r => !Number.isInteger(r.end_year))) { diagnostics.ambiguousPhd++; continue; }
-        const latestYear = Math.max(...candidates.map(r => r.end_year));
-        const latest = candidates.filter(r => r.end_year === latestYear);
-        if (latest.length !== 1) { diagnostics.ambiguousPhd++; continue; }
-        phd = latest[0];
+        if (candidates.some(r => !Number.isInteger(r.end_year))) {
+          const ordered = candidates.filter(r => r.latest_completed_doctorate === true && r.verification_status === 'verified' &&
+            r.sources?.some(s => s.extraction_status === 'verified' && s.source_url && s.source_snapshot));
+          if (ordered.length !== 1) { diagnostics.ambiguousPhd++; continue; }
+          phd = ordered[0];
+        } else {
+          const latestYear = Math.max(...candidates.map(r => r.end_year));
+          const latest = candidates.filter(r => r.end_year === latestYear);
+          if (latest.length !== 1) { diagnostics.ambiguousPhd++; continue; }
+          phd = latest[0];
+        }
       }
       const phdYear = phd.end_year ?? null, undated = phdYear === null;
       if (!Number.isInteger(phdYear) && !(undated && config.years === 'all')) { diagnostics.missingYear++; continue; }
@@ -292,11 +367,18 @@ export function createMiddleware(data) {
       if (!undated && (phdYear > endYear || startYear !== null && phdYear < startYear)) { diagnostics.outsideCohort++; continue; }
       const chosen = chooseJob(person, roles, config, diagnostics);
       if (!chosen) continue;
-      const destination = universityOf(chosen.job.school_id);
-      if (!inDestinationSample(destination)) { diagnostics.outsideDestinationSample++; continue; }
-      const destinationInput = chosen.incompleteBest ? null : weight(config.mode, chosen.job.school_id);
+      const destination = chosen.history
+        ? schools.has(chosen.history.school_id) ? universityOf(chosen.history.school_id) : {school_id:chosen.history.placement_id,name:chosen.history.destination_name,short_name:chosen.history.destination_name,parent_school_id:null}
+        : universityOf(chosen.job.school_id);
+      const outsideDestinationSample = !inDestinationSample(destination);
+      if (outsideDestinationSample) {
+        diagnostics.outsideDestinationSample++;
+        if (!strictValidation && !chosen.job.show_unscored_placement) continue;
+      }
+      const eligibleForCredit = strictValidation ? (chosen.eligibleForCredit ?? qualifiesForCredit(chosen.job)) && phd.degree_completion_status !== 'listed_in_doctoral_placement_record' : !outsideDestinationSample;
+      const destinationInput = !eligibleForCredit ? 0 : chosen.incompleteBest ? null : weight(config.mode, chosen.job.school_id);
       if (undated) diagnostics.undatedIncluded++;
-      if (destinationInput === null) diagnostics.missingScore++;
+      if (destinationInput === null && !outsideDestinationSample) diagnostics.missingScore++;
       for (const affiliation of phd.origin_affiliations || [{school_id: phd.school_id, credit_weight: 1}]) {
       const originUnit = schools.get(affiliation.school_id), origin = universityOf(affiliation.school_id);
       const creditWeight = affiliation.credit_weight;
@@ -304,7 +386,10 @@ export function createMiddleware(data) {
       const graduate = { facultyId: person.faculty_id, name: person.name, phdYear, undated, educationStatus: phd.verification_status, origin, destination,
         originUnit: originUnit.parent_school_id ? originUnit : null,
         title: chosen.job.position_title, startYear: chosen.job.start_year, endYear: chosen.job.end_year,
-        contribution, uncappedContribution: contribution, isSelfPlacement: origin.school_id === destination.school_id, selfPlacementFactor: 1, creditWeight, destinationInput, scored: contribution !== null, incompleteBest: chosen.incompleteBest,
+        contribution, uncappedContribution: contribution, isSelfPlacement: origin.school_id === destination.school_id, selfPlacementFactor: 1, creditWeight, destinationInput, scored: eligibleForCredit && contribution !== null, eligibleForCredit,
+        displayStatus: chosen.displayStatus || 'current',
+        destinationLabel: chosen.history && !schools.has(chosen.history.school_id) ? chosen.history.destination_name : destinationLabel(destination, chosen.history ? {...chosen.job, reported_unit_names:chosen.history.reported_unit_names || chosen.history.destination_name} : chosen.job),
+        outsideDestinationSample, currentAffiliationVerified: currentAffiliationVerified(chosen.job), incompleteBest: chosen.incompleteBest,
         selectedRoleId: chosen.job.role_id, cvUrl: person.cv_url, profileUrl: person.website_url,
         evidence: { phd: evidence(phd.sources), job: evidence(chosen.job.sources), person: evidence(person.sources) }, isSynthetic: false };
       if (!groups.has(origin.school_id)) groups.set(origin.school_id, { school: origin, graduates: [], units: new Map() });
@@ -341,7 +426,10 @@ export function createMiddleware(data) {
           uncapped_score: externalScore + selfScore, self_score_factor: group.selfPlacementFactor,
           credited_self_score: selfScore * group.selfPlacementFactor,
           cap_applied: selfScore > 0 && group.selfPlacementFactor < 1}, graduateCount: group.graduates.length,
-        scoredCount: scored.length, hasScore: scored.length > 0, missingScoreCount: group.graduates.length - scored.length,
+        scoredCount: scored.length, hasScore: scored.length > 0,
+        missingScoreCount: group.graduates.filter(g => g.eligibleForCredit && !g.scored).length,
+        zeroCreditCount: group.graduates.filter(g => !g.eligibleForCredit).length,
+        unscoredDestinationCount: group.graduates.filter(g => g.outsideDestinationSample).length,
         averageWeight: scored.length ? sum / scored.length : null,
         destinationCount: new Set(group.graduates.map(g => g.destination.school_id)).size,
         graduates: [...group.graduates].sort((a, b) => b.phdYear - a.phdYear || a.name.localeCompare(b.name)),
@@ -398,7 +486,9 @@ export function createMiddleware(data) {
       totals: { programCount: rows.length, graduateCount: graduates.length, scoredGraduateCount: graduates.filter(g => g.scored).length,
         destinationCount: new Set(graduates.map(g => g.destination.school_id)).size,
         destinationCountryCount: new Set(graduates.map(g => g.destination.country_code).filter(Boolean)).size,
-        missingScoreCount: graduates.filter(g => !g.scored).length }, diagnostics });
+        missingScoreCount: graduates.filter(g => g.eligibleForCredit && !g.scored).length,
+        zeroCreditCount: graduates.filter(g => !g.eligibleForCredit).length,
+        unscoredDestinationCount: graduates.filter(g => g.outsideDestinationSample).length }, diagnostics });
   }
 
   async function getDataOverview(request = {}) {
@@ -458,4 +548,51 @@ export function createMiddleware(data) {
       earliestPhdYear: years.length ? Math.min(...years) : null, latestPhdYear: years.length ? Math.max(...years) : null } });
   }
   return { getOptions: async () => copy(options), getRankings, getDataOverview, getSelfPlacementOverview, getPublicData: async () => copy(data) };
+}
+
+/** Render public table totals immediately; load person-level records on demand. */
+export function createProgressiveMiddleware(summary, loadData) {
+  if (summary.schema_version !== 1 || !summary.options || !summary.rankings) throw new Error('Invalid ranking summary.');
+  let full = null, loading = null, detailError = null;
+  const loadFullData = () => {
+    if (full) return Promise.resolve(full);
+    if (!loading) loading = Promise.resolve().then(loadData).then(data => {
+      full = createMiddleware(data); detailError = null; return full;
+    }).catch(error => { loading = null; detailError = error; throw error; });
+    return loading;
+  };
+  async function getRankings(request = {}) {
+    if (full) return full.getRankings(request);
+    const config = {...summary.options.defaults, ...request};
+    const base = summary.rankings[String(config.years)];
+    if (!base || config.mode !== summary.options.defaults.mode || config.appointment !== summary.options.defaults.appointment ||
+        !summary.options.universes.some(r => r.id === config.universe)) return (await loadFullData()).getRankings(request);
+    const result = copy(base);
+    result.config = config; result.detailsPending = true;
+    result.rows = result.rows.filter(r => inRegion(r.school, config.universe));
+    let previous = null, rank = null;
+    result.rows.forEach((row, index) => {
+      if (row.hasScore && (previous === null || Math.abs(row.score - previous) > 1e-12)) rank = index + 1;
+      if (row.hasScore) previous = row.score;
+      row.rank = row.hasScore ? rank : null;
+    });
+    for (const source of summary.options.sourceColumns) {
+      const ordered = result.rows.filter(row => row.sourceRanks[source.id] != null)
+        .sort((a,b) => a.sourceRanks[source.id] - b.sourceRanks[source.id] || a.school.name.localeCompare(b.school.name));
+      const values = ordered.map(row => row.sourceRanks[source.id]);
+      let last = null, position = null;
+      ordered.forEach((row,index) => {
+        if (last === null || Math.abs(values[index]-last)>1e-12) position=index+1;
+        row.sourceRanks[source.id]=position; last=values[index];
+      });
+    }
+    result.totals = copy(summary.regionTotals[String(config.years)][config.universe]);
+    return result;
+  }
+  return {
+    getOptions: async () => full ? full.getOptions() : copy(summary.options), getRankings,
+    getDataOverview: async request => full ? full.getDataOverview(request) : copy(summary.overview),
+    getPublicData: async () => (await loadFullData()).getPublicData(), loadFullData,
+    isFullDataReady: () => full !== null, getDetailLoadError: () => detailError?.message || null
+  };
 }

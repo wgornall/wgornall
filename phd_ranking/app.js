@@ -20,6 +20,7 @@
   const PAGE_SIZES = [20, 50, 100];
   let tablePage = 0, pageSize = 20;
   let coverageTrigger = null;
+  let selfPlacementTrigger = null;
   const SOURCE_IDS = [];
   const scoreText = decimal;
   const mainScoreText = value => value == null ? '—' : number(Math.round(value));
@@ -260,8 +261,10 @@
     table.style.setProperty('--table-viewport-width', `${scroller.clientWidth}px`);
   }
   function renderTable() {
-    const coverage = $('#coverage-popover');
-    if (coverage?.matches?.(':popover-open')) coverage.hidePopover();
+    for (const id of ['#coverage-popover', '#self-placement-popover']) {
+      const popover = $(id);
+      if (popover?.matches?.(':popover-open')) popover.hidePopover();
+    }
     const matchingRows = visibleRows();
     const rows = pageRows(matchingRows);
     $('#rankings-body').innerHTML = rows.length ? rows.map(row => {
@@ -338,14 +341,22 @@
     const placements = row.windows.all;
     const grads = placements.graduates;
     const appointment = optionLabel(options.appointments,state.appointment);
+    const destinationScore = g => {
+      if (['past','past_unverified'].includes(g.displayStatus)) return '-';
+      if (g.eligibleForCredit === false || g.outsideDestinationSample || g.destinationInput === 0) return '<button class="coverage-trigger" type="button" popovertarget="coverage-popover" data-coverage aria-label="Why this destination is not covered">not covered<sup>*</sup></button>';
+      const original = contributionText(g.destinationInput);
+      if (!g.isSelfPlacement || !(g.selfPlacementFactor < 1) || !(g.destinationInput > 0)) return original;
+      const adjusted = contributionText(g.destinationInput * g.selfPlacementFactor);
+      return `<button class="self-cap-trigger" type="button" popovertarget="self-placement-popover" data-self-cap aria-label="Self-placement cap: original destination score ${original}; after cap ${adjusted}"><s>${original}</s> <span>${adjusted}</span></button>`;
+    };
     return `<section class="detail-panel" aria-label="University placements from ${escape(row.school.name)}">
       <div class="detail-top"><div><h3>${escape(row.school.name)} · placements</h3><p>${number(placements.graduateCount)} graduates · ${number(placements.destinationCount)} destinations · ${escape(appointment)}${row.units?.length ? ' · all doctoral units, counted once' : ''}</p></div><button class="detail-close" data-expand="${escape(sid)}" aria-label="Collapse ${escape(row.school.name)} placements">Collapse −</button></div>
-      <div class="detail-table-scroll"><table class="graduates-table"><caption class="sr-only">University placements, labeled by doctoral unit. Destination scores precede contribution adjustments.</caption><thead><tr><th scope="col">Graduate</th><th scope="col">Source</th><th scope="col">PhD</th><th scope="col">Doctoral unit</th><th scope="col">Selected appointment</th><th scope="col">Top-3s/year at destination</th></tr></thead><tbody>
-      ${grads.length ? grads.map(g => `<tr${g.eligibleForCredit === false || g.outsideDestinationSample ? ' class="unscored-placement"' : ''}><td><span class="graduate-name">${escape(g.name)}</span></td><td class="evidence-cell"><button class="evidence-button" data-evidence="${escape(g.facultyId)}" data-origin="${escape(sid)}">Evidence ↗</button></td><td>${g.phdYear ?? 'Undated'}</td><td class="doctoral-unit">${escape(g.originUnit ? unitLabel(g.originUnit, row.school) : '-')}${g.creditWeight < 1 ? `<span class="job-title">Joint PhD · ${Math.round(100 * g.creditWeight)}% credit</span>` : ''}</td><td><span>${escape(appointmentLabel(g))}</span>${g.isSelfPlacement ? `<span class="job-title">Self placement${g.selfPlacementFactor < 1 ? ` · ${Math.round(100 * g.selfPlacementFactor)}% of input after cap` : ''}</span>` : ''}${g.incompleteBest ? '<span class="job-title">Best appointment cannot be fully scored.</span>' : ''}</td><td class="contribution">${['past','past_unverified'].includes(g.displayStatus) ? '-' : g.eligibleForCredit === false || g.outsideDestinationSample || g.destinationInput === 0 ? '<button class="coverage-trigger" type="button" popovertarget="coverage-popover" data-coverage aria-label="Why this destination is not covered">not covered<sup>*</sup></button>' : contributionText(g.destinationInput)}</td></tr>`).join('') : '<tr><td colspan="6">No observed qualifying placements are supplied for this institution.</td></tr>'}
+      <div class="detail-table-scroll"><table class="graduates-table"><caption class="sr-only">University placements, labeled by doctoral unit. Destination scores show self-placement cap adjustments when applicable.</caption><thead><tr><th scope="col">Graduate</th><th scope="col">Source</th><th scope="col">PhD</th><th scope="col">Doctoral unit</th><th scope="col">Selected appointment</th><th scope="col">Top-3s/year at destination</th></tr></thead><tbody>
+      ${grads.length ? grads.map(g => `<tr${g.eligibleForCredit === false || g.outsideDestinationSample ? ' class="unscored-placement"' : ''}><td><span class="graduate-name">${escape(g.name)}</span></td><td class="evidence-cell"><button class="evidence-button" data-evidence="${escape(g.facultyId)}" data-origin="${escape(sid)}">Evidence ↗</button></td><td>${g.phdYear ?? 'Undated'}</td><td class="doctoral-unit">${escape(g.originUnit ? unitLabel(g.originUnit, row.school) : '-')}${g.creditWeight < 1 ? `<span class="job-title joint-credit">Joint PhD, ${Math.round(100 * g.creditWeight)}% credit</span>` : ''}</td><td><span>${escape(appointmentLabel(g))}</span>${g.isSelfPlacement ? `<span class="job-title self-placement" title="Same university as the doctoral institution">(same)</span>` : ''}${g.incompleteBest ? '<span class="job-title">Best appointment cannot be fully scored.</span>' : ''}</td><td class="contribution">${destinationScore(g)}</td></tr>`).join('') : '<tr><td colspan="6">No observed qualifying placements are supplied for this institution.</td></tr>'}
       </tbody></table></div>
       ${grads.some(g => !['past','past_unverified'].includes(g.displayStatus) && (g.eligibleForCredit === false || g.outsideDestinationSample || g.destinationInput === 0)) ? '<p class="detail-bottom"><sup>*</sup> Excellent small finance departments that do not meet our total publication cutoffs, economics departments, and top central banks are not covered. <a href="#methodology">Refer to the methodology</a>.</p>' : ''}
 
-      <p class="detail-bottom">All observed years, including undated records. Past-only listings show “-”. Unverified, non-finance, and unranked current listings show “not covered”. These listings use normal type and receive no points. “Past, unverified” means the placement-list job is historical and current status is unresolved. Destination scores are shown before joint-degree credit and self-placement adjustments; credited contributions appear under Evidence.${result.meta.is_synthetic ? ' Synthetic records.' : ''}</p>
+      <p class="detail-bottom">All observed years, including undated records. Past-only listings show “-”. Unverified, non-finance, and unranked current listings show “not covered”. These listings use normal type and receive no points. “Past, unverified” means the placement-list job is historical and current status is unresolved. Destination scores are shown before joint-degree adjustments. When the self-placement cap applies, the original score is crossed out and the capped score appears beside it. Credited contributions appear under Evidence.${result.meta.is_synthetic ? ' Synthetic records.' : ''}</p>
     </section>`;
   }
   function openDialog(kicker, html, trigger) {
@@ -406,14 +417,15 @@
     document.body.append(link); link.click(); link.remove();
     setTimeout(() => URL.revokeObjectURL(url),1000);
   }
-  function positionCoverage() {
-    const popover = $('#coverage-popover');
-    if (!coverageTrigger?.isConnected || !popover.matches(':popover-open')) return;
-    const trigger = coverageTrigger.getBoundingClientRect(), box = popover.getBoundingClientRect();
+  function positionExplanation(popover, anchor) {
+    if (!anchor?.isConnected || !popover.matches(':popover-open')) return;
+    const trigger = anchor.getBoundingClientRect(), box = popover.getBoundingClientRect();
     popover.style.left = `${Math.max(10,Math.min(trigger.right - box.width,innerWidth - box.width - 10))}px`;
     const below = trigger.bottom + 8;
     popover.style.top = `${Math.max(10,Math.min(below + box.height <= innerHeight - 10 ? below : trigger.top - box.height - 8,innerHeight - box.height - 10))}px`;
   }
+  function positionCoverage() { positionExplanation($('#coverage-popover'), coverageTrigger); }
+  function positionSelfPlacement() { positionExplanation($('#self-placement-popover'), selfPlacementTrigger); }
   function closeRegion(restoreFocus = false) {
     $('#region-menu').hidden = true;
     $('#region-filter').setAttribute('aria-expanded','false');
@@ -429,6 +441,9 @@
   $('#coverage-popover').addEventListener('toggle',event => { if (event.newState === 'open') positionCoverage(); });
   window.addEventListener('resize',positionCoverage);
   document.addEventListener('scroll',positionCoverage,true);
+  $('#self-placement-popover').addEventListener('toggle',event => { if (event.newState === 'open') positionSelfPlacement(); });
+  window.addEventListener('resize',positionSelfPlacement);
+  document.addEventListener('scroll',positionSelfPlacement,true);
   $('#region-filter').addEventListener('click',() => {
     const open = $('#region-menu').hidden;
     $('#region-menu').hidden = !open;
@@ -442,6 +457,8 @@
   window.addEventListener('resize',positionRegion);
   document.addEventListener('scroll',positionRegion,true);
   document.addEventListener('click',event => {
+    const selfPlacement = event.target.closest('[data-self-cap]');
+    if (selfPlacement) { selfPlacementTrigger = selfPlacement; return; }
     const coverage = event.target.closest('[data-coverage]');
     if (coverage) { coverageTrigger = coverage; return; }
     if (event.target.closest('#coverage-popover [data-section]')) $('#coverage-popover').hidePopover();

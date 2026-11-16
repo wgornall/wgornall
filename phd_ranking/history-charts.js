@@ -60,7 +60,7 @@ const isCompact=()=>{const width=chart.parentElement?.clientWidth;return width?w
 let layout,focus,drawnCompact;
 function render(compact=isCompact()){
  drawnCompact=compact;
- layout=compact?{w:720,h:455,l:76,r:692,t:24,b:380,font:20}:{w:1200,h:410,l:76,r:1134,t:18,b:346,font:20};
+ layout=compact?{w:720,h:455,l:76,r:692,t:24,b:380,font:15}:{w:1200,h:410,l:76,r:1134,t:18,b:346,font:15};
  const c=layout,x=i=>c.l+i*(c.r-c.l)/(data.windows.length-1),y=v=>c.b-v*(c.b-c.t)/100;
  const parts=[];
  for(let value=0;value<=100;value+=20)parts.push(`<line class="history-grid" x1="${c.l}" x2="${c.r}" y1="${y(value)}" y2="${y(value)}"/><text class="history-tick" x="${c.l-10}" y="${y(value)+c.font/3}" font-size="${c.font}" text-anchor="end">${value}%</text>`);

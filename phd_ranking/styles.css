@@ -301,3 +301,7 @@
 .rankings-table>thead>.metric-group-row>.metric-group-heading{border-bottom:0}.rankings-table>thead>.metric-group-row>.placement-score-heading{border-bottom:1px solid #80958b}
 
 .rankings-table>thead>.metric-group-row>.source-group-heading,.rankings-table>thead>.table-heading-row>.source-col{text-align:right}
+
+.graduates-table .coverage-trigger{font-size:75%}.graduates-table .self-placement,.graduates-table .joint-credit{display:inline;margin-left:6px;margin-top:0}
+
+.self-cap-trigger{font:inherit;color:inherit;background:none;border:0;border-bottom:1px dotted currentColor;padding:2px 0;white-space:nowrap}.self-cap-trigger:hover{color:var(--teal-dark)}.self-cap-trigger s{opacity:.55;margin-right:4px}

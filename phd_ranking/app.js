@@ -257,12 +257,13 @@
     if (!first || !scroller || !scroller.clientWidth) return;
     const viewport = scroller.clientWidth, compact = viewport <= 640;
     const rankWidth = compact ? 36 : 31;
-    const schoolWidth = Math.max(0, Math.min(compact ? 165 : 285, viewport * 0.4, viewport * 0.5 - rankWidth));
-    const graduateWidth = compact ? 42 : 55, sourceWidth = compact ? 32 : 34.6667;
-    const sourceTotal = SOURCE_IDS.length * SOURCE_WINDOWS.length * sourceWidth;
-    const scoreWidth = compact
-      ? Math.max(40, (viewport - rankWidth - schoolWidth) / SCORE_WINDOWS.length)
-      : Math.max(64, (viewport - rankWidth - schoolWidth - graduateWidth - sourceTotal) / SCORE_WINDOWS.length);
+    const frozenWidth = viewport * (compact ? 0.5 : 1/3);
+    const schoolWidth = Math.max(0, frozenWidth - rankWidth);
+    const sourceCount = SOURCE_IDS.length * SOURCE_WINDOWS.length;
+    const otherWidth = (viewport - frozenWidth) / (SCORE_WINDOWS.length * 1.5 + sourceCount + 1);
+    const scoreWidth = compact ? (viewport - frozenWidth) / SCORE_WINDOWS.length : otherWidth * 1.5;
+    const graduateWidth = compact ? 42 : otherWidth, sourceWidth = compact ? 32 : otherWidth;
+    const sourceTotal = sourceCount * sourceWidth;
     const tableWidth = rankWidth + schoolWidth + SCORE_WINDOWS.length * scoreWidth + graduateWidth + sourceTotal;
     table.classList.toggle('compact-table', compact);
     for (const [name, width] of Object.entries({table:tableWidth, rank:rankWidth, school:schoolWidth, window:scoreWidth, graduate:graduateWidth, source:sourceWidth})) {

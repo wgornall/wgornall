@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Finance PhD programs ranked by graduates’ academic jobs, with placement records and research-based and alternative destination scores." name="description"/>
+<meta content="#172e35" name="theme-color"/>
+<title>Finance PhD programs ranked by graduates' jobs (2026)</title>
+<link href="./styles.css" rel="stylesheet"/>
+</head>
+<body>
+<a class="skip-link" href="#results">Skip to rankings</a>
+<header class="site-header">
+<div class="header-inner">
+<h1 class="site-title" id="page-title"><a aria-label="Finance PhD programs ranked by graduates' jobs (2026) home" class="brand" data-section="results" href="#results">Finance PhD programs ranked by graduates' jobs (2026)</a></h1>
+<nav aria-label="Primary"><a class="nav-button" data-section="results" href="#results">Ranking</a><a class="nav-button" data-section="methodology" href="#methodology">Methodology</a></nav>
+</div>
+</header>
+<main class="page-shell">
+<section aria-labelledby="page-title" class="hero">
+<div>
+<div class="ranking-caption-row"><p class="ranking-caption">This page catalogs the doctoral institutions of the faculty of top finance departments. Beyond showing placements, it scores and ranks universities based on the finance departments in which their graduates work. Under <strong>Top-3s/year at destination</strong>, schools are scored based on the total number of top finance articles published annually at the finance departments where their graduates work. For example, two former students working at Stanford GSB Finance earn their doctoral institution <span id="stanford-example-annual">11.8</span> points each because Stanford publishes about that many top-three articles per year. Scores sum these points for graduates from the selected PhD years. Alternative destination scores use common university rankings.</p><button aria-label="Download rankings CSV" class="secondary-button export-button" disabled="" id="export-button" type="button"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5"></path></svg><span>Rankings</span></button></div>
+</div>
+</section>
+<div aria-live="polite" class="sr-only" id="status" role="status"></div>
+<section aria-busy="true" aria-labelledby="results-title" class="results-card" id="results" tabindex="-1">
+<h2 class="sr-only" id="results-title">Rankings <span id="program-count">—</span></h2>
+<p class="sr-only" id="result-summary">Loading the dataset…</p>
+<div class="data-warning" hidden="" id="data-warning"></div>
+<div aria-label="Scrollable rankings; Rank and Doctoral Institution stay frozen" class="table-scroll" role="region" tabindex="0">
+<table class="rankings-table">
+<caption class="sr-only">Finance PhD programs ranked by academic placements. Expand a university group to inspect graduates and doctoral units.</caption>
+<colgroup><col class="rank-col"/><col class="school-col"/><col class="window-col"/><col class="window-col"/><col class="window-col"/><col class="graduate-col"/></colgroup>
+<thead>
+<tr class="metric-group-row">
+<th rowspan="2" aria-sort="none" class="rank-col frozen-rank" scope="col"><button class="sort-button" data-sort="rank">Rank <span aria-hidden="true" class="sort-indicator">↕</span></button></th>
+<th rowspan="2" class="school-col frozen-school" scope="col"><div class="institution-heading"><span class="scoring-prompt"><em>Graduates’ jobs scored using</em></span><span class="mobile-institution-label">Doctoral Institution</span><button aria-controls="region-menu" aria-expanded="false" aria-haspopup="dialog" class="region-filter" id="region-filter" type="button">Doctoral Institution, Location <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.3" viewbox="0 0 16 16"><path d="M2 3h12L9.5 8.5v4L6.5 14V8.5Z"></path></svg><span class="region-selection" hidden="" id="region-selection">All</span></button></div></th>
+
+<th class="metric-group-heading" colspan="3" scope="colgroup"><button class="metric-sort-button" type="button" data-sort-default="score:10" aria-label="Sort by Top-3s/year at destinations for the last 10 years">Σ Top-3s/year at destinations</button></th>
+<th class="metric-group-heading graduate-group-heading" scope="colgroup"># grads</th>
+</tr>
+<tr class="table-heading-row">
+
+<th aria-sort="descending" class="window-col numeric-col active-score-column" data-score-window="10" scope="col"><button class="sort-button" data-sort="score:10">10y <span aria-hidden="true" class="sort-indicator">↓</span></button></th>
+<th aria-sort="none" class="window-col numeric-col" data-score-window="20" scope="col"><button class="sort-button" data-sort="score:20">20y <span aria-hidden="true" class="sort-indicator">↕</span></button></th>
+<th aria-sort="none" class="window-col numeric-col" data-score-window="all" scope="col"><button class="sort-button" data-sort="score:all">All <span aria-hidden="true" class="sort-indicator">↕</span></button></th>
+<th aria-sort="none" class="graduate-col" scope="col"><button aria-label="Sort by all-time tracked graduate count" class="sort-button" data-sort="graduates">tracked <span aria-hidden="true" class="sort-indicator">↕</span></button></th>
+
+</tr>
+</thead>
+<tbody id="rankings-body"><tr><td colspan="6"><div class="loading-state"><span class="spinner"></span>Loading the placement explorer…</div></td></tr></tbody>
+</table>
+</div>
+<div class="table-footer"><span>Alternative ranks are suppressed for fewer than 3 total tracked grads.</span></div><p class="mobile-scroll-note">Scroll for more columns →</p>
+</section>
+<section class="page-section paper-section compact-explanation" aria-label="About these rankings">
+<div class="paper-body">
+<p><strong>Interpretation:</strong> Scores are provided but prospective students are strongly encouraged to review the actual placements, not the scores or the ranks.</p>
+<p id="methodology" tabindex="-1"><strong>Scoring methodology:</strong> A university’s score is the sum of the destination scores for the finance departments that employ its graduates, counting each graduate separately. <strong>ASU score</strong>, <a href="https://wpcarey.asu.edu/finance-degrees/faculty-research" target="_blank" rel="noopener noreferrer">Arizona State University Finance Research Rankings</a>; <strong>UTD score</strong>, <a href="https://jsom.utdallas.edu/the-utd-top-100-business-school-research-rankings/search#rankingsByJournal" target="_blank" rel="noopener noreferrer">UT Dallas Business School Research Rankings</a>; <strong>QS score</strong>, <a href="https://www.topuniversities.com/university-subject-rankings/accounting-finance" target="_blank" rel="noopener noreferrer">QS Accounting &amp; Finance</a>; <strong>THE score</strong>, <a href="https://www.timeshighereducation.com/world-university-rankings/2026/subject-ranking/business-and-economics" target="_blank" rel="noopener noreferrer">Times Higher Education Business and Economics</a>; <strong>USN score</strong>, <a href="https://www.usnews.com/education/best-global-universities/economics-business" target="_blank" rel="noopener noreferrer">U.S. News Economics and Business</a>. Only the top 100 schools (including ties) on each external ranking are scored for that ranking; other destinations have no scored value and contribute zero in that comparison. ASU uses 2016–2025 and UTD uses 2017–2026 (partial 2026), restricted to the Journal of Finance, Journal of Financial Economics, and Review of Financial Studies. Raw scores are not provided here due to potential copyright issues but are publicly available at the time of writing. <strong>Top-3s/year at destination</strong> is the average of the annualized ASU and UTD article counts (not incomparable authorship weighted scores), using only one if the other is unavailable. Some schools’ tracked placements are almost entirely at the same university. The contribution from these self-placements is capped at <strong>1/4</strong> of the total. This does not affect the top 20 schools in the default 10-year ranking.</p>
+<div class="methodology-copy">
+<div class="supporting-copy">
+<div class="paragraph-download-row"><p id="data" tabindex="-1"><strong>Faculty PhD and employment data:</strong> LLMs were used to collect data on current professorial appointments in finance departments at schools ranked in the top 50 by at least one source ranking. The dataset covers <span id="finance-faculty-count">—</span> finance faculty records and <span id="employing-university-count">—</span> employing universities and is <a id="data-download-link" href="./placement-data.json" download="finance-placement-public-data.json">available online</a>. Official directories, profiles, and CVs were used where available. Gaps may reflect unreadable CVs, unverifiable information, errors, or removal requests. Use the removal button below to request deletion. PhD origins are unrestricted, but graduates working outside this destination sample or who left academia are missed, so these totals are not placement rates. Each graduate receives credit for one current finance-department or university-finance-institute job, choosing the highest destination score when several qualify; duplicate university affiliations count once, and visitor, postdoctoral, teaching-only, courtesy, emeritus, honorary, practice, non-primary, actuarial-science, future, and ended roles are excluded. <span id="data-download-note" role="status"></span></p><button id="data-download" class="secondary-button export-button" type="button" disabled aria-label="Download underlying faculty data"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5"></path></svg><span>Data</span></button></div>
+<p id="limitations" tabindex="-1"><strong>Limitations:</strong> All rankings are flawed, especially school rankings. i) <strong>Smaller programs</strong> have fewer opportunities to earn points; incomplete class records prevent a reliable adjustment. ii) Placements reflect <strong>student ability</strong>, effort, and luck as well as training. A school offering poor training but attracting excellent students can rank highly. iii) Rankings are <strong>imperfect proxies</strong> of reality. Your research interests and preferences matter. iv) <strong>Economics programs and journals are incompletely covered.</strong> The rankings miss placements to economics departments and publications in economics journals. Input scores may nevertheless include finance publications from economics departments.</p>
+<p id="conflicts" tabindex="-1"><strong>Conflicts of interest:</strong> I am <a href="https://willgornall.com/">Will Gornall</a>, a Stanford GSB graduate, a UBC professor, and the director of UBC’s finance PhD program. I created this page because I thought UBC’s PhD placements were stronger than its faculty research ranking suggested. These affiliations may influence my perspective. I have tried to make reasonable, neutral methodological choices, but those choices involve judgment and can materially affect the results. For example, UBC ranks substantially higher when placements are weighted using Times Higher Education (THE) scores than under the top-3 publication count measure I used as the default. This is an independent project, developed without institutional input from UBC.</p>
+<p id="corrections" tabindex="-1"><strong>Corrections:</strong> Submit data or code fixes by pull request, with sources for factual changes.</p>
+<p id="remove-your-data" tabindex="-1"><strong>Remove your data:</strong> <button class="inline-action" data-remove-record="" aria-controls="removal-dialog" aria-haspopup="dialog" type="button">Request removal</button> privately. Removal may lower your doctoral institution’s score.</p>
+
+</div>
+</div>
+</div>
+</section><section aria-labelledby="universe-label" class="region-menu" hidden="" id="region-menu" role="dialog">
+<div class="region-menu-title"><h3 id="universe-label">Schools being ranked</h3><button aria-label="Close region filter" class="icon-button" id="region-close" type="button">×</button></div>
+<div aria-labelledby="universe-label" class="region-choices" id="universe-controls" role="radiogroup"></div>
+<p>Filter PhD origins; destinations remain worldwide within the sample.</p>
+</section></main>
+<dialog aria-labelledby="dialog-title" class="detail-dialog" id="detail-dialog"><div class="dialog-header"><span class="eyebrow" id="dialog-kicker">METHODOLOGY</span><button aria-label="Close dialog" class="icon-button" id="dialog-close">×</button></div><div id="dialog-content"></div></dialog><dialog aria-describedby="removal-intro" aria-labelledby="removal-title" class="detail-dialog removal-dialog" id="removal-dialog">
+<div class="dialog-header"><span class="eyebrow">PRIVATE RECORD REQUEST</span><button aria-label="Close removal request" class="icon-button" id="removal-close" type="button">×</button></div>
+<h2 id="removal-title">Remove me from the data</h2>
+<p id="removal-intro">Prepare a private removal request for your record or one you are authorized to manage. No explanation is required.</p>
+
+<form autocomplete="off" id="removal-form">
+<div class="removal-fields">
+<label for="removal-name">Professional name <span class="required-label">Required</span><input autocomplete="off" id="removal-name" maxlength="180" name="professional-name" required="" type="text"/></label>
+<label for="removal-record">Record ID <span class="optional-label">Optional</span><input autocomplete="off" id="removal-record" maxlength="120" name="record-id" placeholder="If known" type="text"/></label>
+<label for="removal-profile">Public professional profile <span class="optional-label">Optional</span><input autocomplete="off" id="removal-profile" maxlength="800" name="profile" placeholder="https://…" type="url"/></label>
+<label for="removal-note">Record clarification <span class="optional-label">Optional</span><textarea id="removal-note" maxlength="1500" name="note" placeholder="Help identify the record. Do not attach sensitive documents." rows="2"></textarea></label>
+</div>
+<p class="paper-note" id="removal-contact-note"></p>
+<details class="removal-draft" id="removal-draft"><summary>Review the request text</summary><textarea aria-label="Unsent removal request text" id="removal-preview" readonly="" rows="8" spellcheck="false"></textarea></details>
+<div class="removal-actions"><button class="primary-button" id="removal-email" type="submit">Open email draft ↗</button><button class="secondary-button" id="removal-copy" type="button">Copy request</button><button class="secondary-button" id="removal-download" type="button">Save request</button></div>
+<p class="privacy-local-note">This form stays in your browser. Send the email yourself; opening a draft does not submit a request.</p>
+<p aria-live="polite" class="removal-status" id="removal-status" role="status"></p>
+</form>
+</dialog>
+<noscript><p class="noscript">JavaScript is required. Rankings run in your browser.</p></noscript>
+
+
+
+
+<script src="./site-config.js" defer></script>
+<script src="./privacy.js" defer></script>
+<script src="./adapter.js" defer></script>
+<script src="./app.js" defer></script>
+</body>
+</html>

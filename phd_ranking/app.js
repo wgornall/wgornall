@@ -157,7 +157,7 @@
     try {
       const payload = await middleware.getPublicData();
       if (result?.detailsPending) { overviewCache.clear(); await refresh(); }
-      const blob = new Blob([JSON.stringify(payload,null,2)+'\n'], {type:'application/json;charset=utf-8'});
+      const blob = new Blob([JSON.stringify(payload)+'\n'], {type:'application/json;charset=utf-8'});
       const url = URL.createObjectURL(blob), link = document.createElement('a');
       link.href = url;
       link.download = `finance-placement-public-data-${options.meta.as_of}${options.meta.is_synthetic ? '-SYNTHETIC' : ''}.json`;

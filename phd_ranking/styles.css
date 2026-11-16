@@ -299,3 +299,5 @@
 
 /* A horizontal rule groups the three summed placement score columns. */
 .rankings-table>thead>.metric-group-row>.metric-group-heading{border-bottom:0}.rankings-table>thead>.metric-group-row>.placement-score-heading{border-bottom:1px solid #80958b}
+
+.rankings-table>thead>.metric-group-row>.source-group-heading,.rankings-table>thead>.table-heading-row>.source-col{text-align:right}

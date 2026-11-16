@@ -50983,11 +50983,26 @@
       "name": "Natalie Cox",
       "field": "finance",
       "cv_url": null,
-      "website_url": null,
-      "review_flags": [
-        "draft_unverified"
-      ],
-      "sources": []
+      "website_url": "https://whitmancollege.princeton.edu/people/natalie-cox",
+      "review_flags": [],
+      "sources": [
+        {
+          "source_url": "https://whitmancollege.princeton.edu/people/natalie-cox",
+          "source_snapshot": "Whitman College identifies Natalie Cox as Assistant Professor of Economics and AB Adviser.",
+          "retrieved_at": "2026-11-15",
+          "extraction_status": "verified",
+          "source_document": "launch_appointment_followup_2026-11-15",
+          "verification_basis": "direct_official_source_review"
+        },
+        {
+          "source_url": "https://bcf.princeton.edu/people/",
+          "source_snapshot": "Bendheim Center for Finance lists Natalie Cox as Assistant Professor of Economics, with a Berkeley doctorate and research topics Finance and Industrial Organization.",
+          "retrieved_at": "2026-11-15",
+          "extraction_status": "verified",
+          "source_document": "launch_appointment_followup_2026-11-15",
+          "verification_basis": "direct_official_source_review"
+        }
+      ]
     },
     {
       "faculty_id": "faculty_8702dafb964b6335",
@@ -98801,7 +98816,7 @@
       "faculty_id": "faculty_9b09e5e5d01ed08e",
       "name": "Mehmet Canayaz",
       "field": "finance",
-      "website_url": "https://pure.psu.edu/en/persons/mehmet-canayaz/",
+      "website_url": "https://researchdirectory.uc.edu/p/canayami",
       "cv_url": null,
       "review_flags": [],
       "sources": [
@@ -98885,6 +98900,14 @@
           "audit_finding_id": "new_551cac7d30c6c8",
           "source_snapshot": "The official finance faculty table and Penn State research profile establish an ordinary current research finance appointment, omitted from the supplied roster. Official current research listings include his finance research.",
           "verification_basis": "supplied_independent_audit"
+        },
+        {
+          "source_url": "https://www.business.uc.edu/faculty-research/finance/faculty.html",
+          "source_snapshot": "Cincinnati Finance Faculty lists Mehmet Canayaz as Assistant Professor. The project owner directs that Cincinnati is his current appointment and Penn State is no longer current; the latter determination is an author correction, not an end date supplied by this directory.",
+          "retrieved_at": "2026-11-15",
+          "extraction_status": "verified",
+          "source_document": "launch_appointment_followup_2026-11-15",
+          "verification_basis": "direct_official_source_review_and_explicit_author_correction"
         }
       ],
       "audit_proposal_id": "new_551cac7d30c6c8"
@@ -106118,11 +106141,11 @@
       "field": "finance",
       "start_year": null,
       "end_year": null,
-      "appointment_type": null,
-      "position_title": null,
+      "appointment_type": "research_faculty",
+      "position_title": "Assistant Professor of Economics",
       "is_primary": null,
       "affiliation_status": "website_listing_supported",
-      "affiliation_basis": "official_directory_catalog_and_individual_profile_with_title_conflict",
+      "affiliation_basis": "official_college_and_finance_center_assistant_professor_listings",
       "sources": [
         {
           "source_url": "https://economics.princeton.edu/people/",
@@ -106201,12 +106224,31 @@
             "identity",
             "finance_research_activity"
           ]
+        },
+        {
+          "source_url": "https://whitmancollege.princeton.edu/people/natalie-cox",
+          "source_snapshot": "Whitman College identifies Natalie Cox as Assistant Professor of Economics and AB Adviser.",
+          "retrieved_at": "2026-11-15",
+          "extraction_status": "verified",
+          "source_document": "launch_appointment_followup_2026-11-15",
+          "verification_basis": "direct_official_source_review"
+        },
+        {
+          "source_url": "https://bcf.princeton.edu/people/",
+          "source_snapshot": "Bendheim Center for Finance lists Natalie Cox as Assistant Professor of Economics, with a Berkeley doctorate and research topics Finance and Industrial Organization.",
+          "retrieved_at": "2026-11-15",
+          "extraction_status": "verified",
+          "source_document": "launch_appointment_followup_2026-11-15",
+          "verification_basis": "direct_official_source_review"
         }
       ],
       "appointment_review_status": "website_supported",
-      "appointment_review_report": "RESULT_03_remaining_appointments.json",
-      "research_finance_scope_status": "unresolved_current_research_appointment",
-      "appointment_inclusion_review": "unresolved",
+      "appointment_review_report": "launch_appointment_followup_2026-11-15",
+      "research_finance_scope_status": "supported",
+      "appointment_inclusion_review": "include",
+      "reported_unit_names": "Department of Economics; Bendheim Center for Finance",
+      "is_current": true,
+      "appointment_review_note": "Included on the basis of Princeton Whitman College and Bendheim Center for Finance listings as Assistant Professor of Economics, plus documented finance research. Economics directory/catalog Lecturer labels are retained in source history as a title discrepancy; no contractual tenure or primary-status claim is inferred.",
       "website_verification_status": "supported_by_reviewed_website"
     },
     {
@@ -334399,7 +334441,7 @@
       "is_primary": null,
       "start_year": null,
       "end_year": null,
-      "affiliation_status": "official_current_listing_supported",
+      "affiliation_status": "ended",
       "sources": [
         {
           "source_url": "https://www.smeal.psu.edu/finance/people/faculty/",
@@ -334481,8 +334523,19 @@
           "audit_finding_id": "new_551cac7d30c6c8",
           "source_snapshot": "The official finance faculty table and Penn State research profile establish an ordinary current research finance appointment, omitted from the supplied roster. Official current research listings include his finance research.",
           "verification_basis": "supplied_independent_audit"
+        },
+        {
+          "source_url": "https://www.business.uc.edu/faculty-research/finance/faculty.html",
+          "source_snapshot": "Cincinnati Finance Faculty lists Mehmet Canayaz as Assistant Professor. The project owner directs that Cincinnati is his current appointment and Penn State is no longer current; the latter determination is an author correction, not an end date supplied by this directory.",
+          "retrieved_at": "2026-11-15",
+          "extraction_status": "verified",
+          "source_document": "launch_appointment_followup_2026-11-15",
+          "verification_basis": "direct_official_source_review_and_explicit_author_correction"
         }
       ],
+      "is_current": false,
+      "appointment_inclusion_review": "exclude_ended_current_appointment",
+      "appointment_review_note": "Explicit project-owner correction on 2026-11-15: Cincinnati is current; Penn State is not current. Official Cincinnati finance directory confirms the current assistant-professor listing. No exact Penn State end date is inferred.",
       "website_verification_status": "supported_by_reviewed_website"
     },
     {
@@ -351705,7 +351758,7 @@
     "washington_university_in_st_louis": 18,
     "university_of_oxford": 18,
     "harvard_university": 27,
-    "pennsylvania_state_university": 20,
+    "pennsylvania_state_university": 19,
     "university_of_utah": 16,
     "purdue_university": 14,
     "stockholm_school_of_economics": 22,
@@ -354459,7 +354512,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 8,
-          "rank": 43
+          "rank": 42
         },
         "us_news_business_and_econ": {
           "contributors": 6,
@@ -354526,7 +354579,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 13,
-          "rank": 37
+          "rank": 36
         },
         "times_higher_education_business_and_econ": {
           "contributors": 8,
@@ -355142,80 +355195,6 @@
           "rank": null
         }
       },
-      "university_of_oxford": {
-        "asu_research": {
-          "contributors": 6,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 37
-        },
-        "qs_accounting_and_finance": {
-          "contributors": 6,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 36
-        },
-        "times_higher_education_business_and_econ": {
-          "contributors": 6,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 39
-        },
-        "us_news_business_and_econ": {
-          "contributors": 6,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 44
-        },
-        "ut_dallas_business_research": {
-          "contributors": 6,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 37
-        }
-      },
-      "university_of_oxford__sa_d_business_school": {
-        "asu_research": {
-          "contributors": 1,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 5,
-          "rank": null
-        },
-        "qs_accounting_and_finance": {
-          "contributors": 1,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 5,
-          "rank": null
-        },
-        "times_higher_education_business_and_econ": {
-          "contributors": 1,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 5,
-          "rank": null
-        },
-        "us_news_business_and_econ": {
-          "contributors": 1,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 5,
-          "rank": null
-        },
-        "ut_dallas_business_research": {
-          "contributors": 1,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 5,
-          "rank": null
-        }
-      },
       "tsinghua_university": {
         "asu_research": {
           "contributors": 19,
@@ -355808,6 +355787,80 @@
           "rank": null
         }
       },
+      "university_of_oxford": {
+        "asu_research": {
+          "contributors": 5,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 21,
+          "rank": 38
+        },
+        "qs_accounting_and_finance": {
+          "contributors": 5,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 21,
+          "rank": 37
+        },
+        "times_higher_education_business_and_econ": {
+          "contributors": 5,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 21,
+          "rank": 43
+        },
+        "us_news_business_and_econ": {
+          "contributors": 5,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 21,
+          "rank": 46
+        },
+        "ut_dallas_business_research": {
+          "contributors": 5,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 21,
+          "rank": 37
+        }
+      },
+      "university_of_oxford__sa_d_business_school": {
+        "asu_research": {
+          "contributors": 1,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 5,
+          "rank": null
+        },
+        "qs_accounting_and_finance": {
+          "contributors": 1,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 5,
+          "rank": null
+        },
+        "times_higher_education_business_and_econ": {
+          "contributors": 1,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 5,
+          "rank": null
+        },
+        "us_news_business_and_econ": {
+          "contributors": 1,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 5,
+          "rank": null
+        },
+        "ut_dallas_business_research": {
+          "contributors": 1,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 5,
+          "rank": null
+        }
+      },
       "university_of_hong_kong": {
         "asu_research": {
           "contributors": 14,
@@ -355888,7 +355941,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 15,
-          "rank": 38
+          "rank": 37
         },
         "qs_accounting_and_finance": {
           "contributors": 5,
@@ -356198,7 +356251,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 19,
-          "rank": 40
+          "rank": 39
         },
         "us_news_business_and_econ": {
           "contributors": 6,
@@ -356864,7 +356917,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 8,
-          "rank": 41
+          "rank": 40
         },
         "us_news_business_and_econ": {
           "contributors": 4,
@@ -358011,7 +358064,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 15,
-          "rank": 42
+          "rank": 41
         },
         "us_news_business_and_econ": {
           "contributors": 6,
@@ -359757,7 +359810,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 55,
-          "rank": 45
+          "rank": 44
         },
         "ut_dallas_business_research": {
           "contributors": 6,
@@ -362680,7 +362733,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 16,
-          "rank": 46
+          "rank": 45
         },
         "ut_dallas_business_research": {
           "contributors": 6,
@@ -369083,7 +369136,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 19,
-          "rank": 45
+          "rank": 44
         },
         "ut_dallas_business_research": {
           "contributors": 13,
@@ -369944,117 +369997,6 @@
           "rank": null
         }
       },
-      "university_of_oxford": {
-        "asu_research": {
-          "contributors": 10,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 37
-        },
-        "qs_accounting_and_finance": {
-          "contributors": 10,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 46
-        },
-        "times_higher_education_business_and_econ": {
-          "contributors": 10,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 40
-        },
-        "us_news_business_and_econ": {
-          "contributors": 10,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 44
-        },
-        "ut_dallas_business_research": {
-          "contributors": 10,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 37
-        }
-      },
-      "university_of_oxford__department_of_economics_nuffield_college": {
-        "asu_research": {
-          "contributors": 1,
-          "missing": 0,
-          "status": "suppressed",
-          "total_tracked_graduates": 1,
-          "rank": null
-        },
-        "qs_accounting_and_finance": {
-          "contributors": 1,
-          "missing": 0,
-          "status": "suppressed",
-          "total_tracked_graduates": 1,
-          "rank": null
-        },
-        "times_higher_education_business_and_econ": {
-          "contributors": 1,
-          "missing": 0,
-          "status": "suppressed",
-          "total_tracked_graduates": 1,
-          "rank": null
-        },
-        "us_news_business_and_econ": {
-          "contributors": 1,
-          "missing": 0,
-          "status": "suppressed",
-          "total_tracked_graduates": 1,
-          "rank": null
-        },
-        "ut_dallas_business_research": {
-          "contributors": 1,
-          "missing": 0,
-          "status": "suppressed",
-          "total_tracked_graduates": 1,
-          "rank": null
-        }
-      },
-      "university_of_oxford__sa_d_business_school": {
-        "asu_research": {
-          "contributors": 2,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 5,
-          "rank": null
-        },
-        "qs_accounting_and_finance": {
-          "contributors": 2,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 5,
-          "rank": null
-        },
-        "times_higher_education_business_and_econ": {
-          "contributors": 2,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 5,
-          "rank": null
-        },
-        "us_news_business_and_econ": {
-          "contributors": 2,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 5,
-          "rank": null
-        },
-        "ut_dallas_business_research": {
-          "contributors": 2,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 5,
-          "rank": null
-        }
-      },
       "peking_university": {
         "asu_research": {
           "contributors": 37,
@@ -370068,14 +370010,14 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 51,
-          "rank": 47
+          "rank": 46
         },
         "times_higher_education_business_and_econ": {
           "contributors": 37,
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 51,
-          "rank": 41
+          "rank": 40
         },
         "us_news_business_and_econ": {
           "contributors": 37,
@@ -370610,13 +370552,124 @@
           "rank": null
         }
       },
+      "university_of_oxford": {
+        "asu_research": {
+          "contributors": 9,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 21,
+          "rank": 38
+        },
+        "qs_accounting_and_finance": {
+          "contributors": 9,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 21,
+          "rank": 52
+        },
+        "times_higher_education_business_and_econ": {
+          "contributors": 9,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 21,
+          "rank": 42
+        },
+        "us_news_business_and_econ": {
+          "contributors": 9,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 21,
+          "rank": 46
+        },
+        "ut_dallas_business_research": {
+          "contributors": 9,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 21,
+          "rank": 38
+        }
+      },
+      "university_of_oxford__department_of_economics_nuffield_college": {
+        "asu_research": {
+          "contributors": 1,
+          "missing": 0,
+          "status": "suppressed",
+          "total_tracked_graduates": 1,
+          "rank": null
+        },
+        "qs_accounting_and_finance": {
+          "contributors": 1,
+          "missing": 0,
+          "status": "suppressed",
+          "total_tracked_graduates": 1,
+          "rank": null
+        },
+        "times_higher_education_business_and_econ": {
+          "contributors": 1,
+          "missing": 0,
+          "status": "suppressed",
+          "total_tracked_graduates": 1,
+          "rank": null
+        },
+        "us_news_business_and_econ": {
+          "contributors": 1,
+          "missing": 0,
+          "status": "suppressed",
+          "total_tracked_graduates": 1,
+          "rank": null
+        },
+        "ut_dallas_business_research": {
+          "contributors": 1,
+          "missing": 0,
+          "status": "suppressed",
+          "total_tracked_graduates": 1,
+          "rank": null
+        }
+      },
+      "university_of_oxford__sa_d_business_school": {
+        "asu_research": {
+          "contributors": 2,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 5,
+          "rank": null
+        },
+        "qs_accounting_and_finance": {
+          "contributors": 2,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 5,
+          "rank": null
+        },
+        "times_higher_education_business_and_econ": {
+          "contributors": 2,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 5,
+          "rank": null
+        },
+        "us_news_business_and_econ": {
+          "contributors": 2,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 5,
+          "rank": null
+        },
+        "ut_dallas_business_research": {
+          "contributors": 2,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 5,
+          "rank": null
+        }
+      },
       "pompeu_fabra_university": {
         "asu_research": {
           "contributors": 6,
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 6,
-          "rank": 39
+          "rank": 38
         },
         "qs_accounting_and_finance": {
           "contributors": 6,
@@ -370644,7 +370697,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 6,
-          "rank": 38
+          "rank": 37
         }
       },
       "tsinghua_university": {
@@ -370875,7 +370928,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 15,
-          "rank": 38
+          "rank": 37
         },
         "qs_accounting_and_finance": {
           "contributors": 12,
@@ -371400,14 +371453,14 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 10,
-          "rank": 48
+          "rank": 47
         },
         "times_higher_education_business_and_econ": {
           "contributors": 7,
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 10,
-          "rank": 42
+          "rank": 41
         },
         "us_news_business_and_econ": {
           "contributors": 7,
@@ -371474,7 +371527,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 26,
-          "rank": 51
+          "rank": 50
         },
         "times_higher_education_business_and_econ": {
           "contributors": 8,
@@ -372029,7 +372082,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 7,
-          "rank": 52
+          "rank": 51
         },
         "times_higher_education_business_and_econ": {
           "contributors": 5,
@@ -373102,7 +373155,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 8,
-          "rank": 49
+          "rank": 48
         },
         "times_higher_education_business_and_econ": {
           "contributors": 6,
@@ -373805,7 +373858,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 14,
-          "rank": 50
+          "rank": 49
         },
         "times_higher_education_business_and_econ": {
           "contributors": 12,
@@ -379147,7 +379200,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 17,
-          "rank": 46
+          "rank": 45
         },
         "ut_dallas_business_research": {
           "contributors": 14,
@@ -390286,7 +390339,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 27,
-          "rank": 27
+          "rank": 26
         },
         "ut_dallas_business_research": {
           "contributors": 27,
@@ -390390,7 +390443,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 24,
-          "rank": 27
+          "rank": 26
         },
         "us_news_business_and_econ": {
           "contributors": 24,
@@ -390481,40 +390534,77 @@
           "rank": 25
         }
       },
-      "university_of_oxford": {
+      "insead": {
         "asu_research": {
-          "contributors": 22,
+          "contributors": 20,
           "missing": 0,
           "status": "published",
-          "total_tracked_graduates": 22,
+          "total_tracked_graduates": 20,
+          "rank": 27
+        },
+        "qs_accounting_and_finance": {
+          "contributors": 20,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 20,
+          "rank": 35
+        },
+        "times_higher_education_business_and_econ": {
+          "contributors": 20,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 20,
+          "rank": 38
+        },
+        "us_news_business_and_econ": {
+          "contributors": 20,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 20,
+          "rank": 53
+        },
+        "ut_dallas_business_research": {
+          "contributors": 20,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 20,
+          "rank": 26
+        }
+      },
+      "university_of_oxford": {
+        "asu_research": {
+          "contributors": 21,
+          "missing": 0,
+          "status": "published",
+          "total_tracked_graduates": 21,
           "rank": 26
         },
         "qs_accounting_and_finance": {
-          "contributors": 22,
+          "contributors": 21,
           "missing": 0,
           "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 26
+          "total_tracked_graduates": 21,
+          "rank": 27
         },
         "times_higher_education_business_and_econ": {
-          "contributors": 22,
+          "contributors": 21,
           "missing": 0,
           "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 26
+          "total_tracked_graduates": 21,
+          "rank": 27
         },
         "us_news_business_and_econ": {
-          "contributors": 22,
+          "contributors": 21,
           "missing": 0,
           "status": "published",
-          "total_tracked_graduates": 22,
-          "rank": 26
+          "total_tracked_graduates": 21,
+          "rank": 27
         },
         "ut_dallas_business_research": {
-          "contributors": 22,
+          "contributors": 21,
           "missing": 0,
           "status": "published",
-          "total_tracked_graduates": 22,
+          "total_tracked_graduates": 21,
           "rank": 27
         }
       },
@@ -390590,43 +390680,6 @@
           "status": "published",
           "total_tracked_graduates": 5,
           "rank": null
-        }
-      },
-      "insead": {
-        "asu_research": {
-          "contributors": 20,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 20,
-          "rank": 27
-        },
-        "qs_accounting_and_finance": {
-          "contributors": 20,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 20,
-          "rank": 35
-        },
-        "times_higher_education_business_and_econ": {
-          "contributors": 20,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 20,
-          "rank": 38
-        },
-        "us_news_business_and_econ": {
-          "contributors": 20,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 20,
-          "rank": 53
-        },
-        "ut_dallas_business_research": {
-          "contributors": 20,
-          "missing": 0,
-          "status": "published",
-          "total_tracked_graduates": 20,
-          "rank": 26
         }
       },
       "university_of_southern_california": {
@@ -394749,7 +394802,7 @@
           "missing": 0,
           "status": "published",
           "total_tracked_graduates": 20,
-          "rank": 27
+          "rank": 26
         },
         "times_higher_education_business_and_econ": {
           "contributors": 20,
@@ -479560,16 +479613,16 @@
           {
             "school_id": "university_of_oxford",
             "school_name": "University of Oxford",
-            "recorded_placements": 6,
+            "recorded_placements": 5,
             "self_placements": 0,
             "self_placement_share": 0,
-            "external_score": 24.45,
+            "external_score": 20.65,
             "self_score": 0,
-            "uncapped_score": 24.45,
+            "uncapped_score": 20.65,
             "self_score_factor": 1,
             "credited_self_score": 0,
             "cap_applied": false,
-            "capped_score": 24.45
+            "capped_score": 20.65
           },
           {
             "school_id": "university_of_pennsylvania",
@@ -483479,16 +483532,16 @@
           {
             "school_id": "university_of_oxford",
             "school_name": "University of Oxford",
-            "recorded_placements": 10,
+            "recorded_placements": 9,
             "self_placements": 0,
             "self_placement_share": 0,
-            "external_score": 42.5,
+            "external_score": 38.7,
             "self_score": 0,
-            "uncapped_score": 42.5,
+            "uncapped_score": 38.7,
             "self_score_factor": 1,
             "credited_self_score": 0,
             "cap_applied": false,
-            "capped_score": 42.5
+            "capped_score": 38.7
           },
           {
             "school_id": "university_of_pennsylvania",
@@ -488504,16 +488557,16 @@
           {
             "school_id": "university_of_oxford",
             "school_name": "University of Oxford",
-            "recorded_placements": 22,
+            "recorded_placements": 21,
             "self_placements": 3,
-            "self_placement_share": 0.13636363636363635,
-            "external_score": 77.25,
+            "self_placement_share": 0.14285714285714285,
+            "external_score": 73.45,
             "self_score": 12,
-            "uncapped_score": 89.25,
+            "uncapped_score": 85.45,
             "self_score_factor": 1,
             "credited_self_score": 12,
             "cap_applied": false,
-            "capped_score": 89.24999999999999
+            "capped_score": 85.44999999999999
           },
           {
             "school_id": "university_of_paris_vi",

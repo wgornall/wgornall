@@ -43,9 +43,11 @@
     if (options.appointments.some(x => x.id === p.get('appointment'))) next.appointment = p.get('appointment');
     return next;
   }
-  function writeHash() {
-    const hash = new URLSearchParams({ mode: state.mode, universe: state.universe, years: String(state.years), appointment: state.appointment }).toString();
-    try { history.replaceState(null, '', `${location.pathname}${location.search}#${hash}`); } catch { /* Some local-file environments disallow history writes. */ }
+  function clearFilterHash() {
+    // Read older filter links once, then keep filter choices in memory.
+    const params = new URLSearchParams(location.hash.slice(1));
+    if (!['mode', 'universe', 'years', 'appointment'].some(key => params.has(key))) return;
+    try { history.replaceState(null, '', `${location.pathname}${location.search}`); } catch { /* Some local-file environments disallow history writes. */ }
   }
   const optionLabel = (list, id) => list.find(x => x.id === id)?.label || id;
   function radioButtons(items, key) {
@@ -77,7 +79,7 @@
   async function refresh() {
     const token = ++requestNumber;
     syncControls();
-    writeHash();
+    clearFilterHash();
     $('#results').setAttribute('aria-busy', 'true');
     $('#status').textContent = 'Updating rankings.';
     $('#export-button').disabled = true;
@@ -455,7 +457,7 @@
   });
   window.addEventListener('hashchange',() => {
     const section = location.hash.slice(1);
-    if (PAGE_SECTIONS.includes(section)) { goToSection(section); if (options) writeHash(); return; }
+    if (PAGE_SECTIONS.includes(section)) { goToSection(section); return; }
     if (options) { state = readHash(); sort = { key: `score:${state.years}`, descending: true }; refresh(); }
   });
   async function initialize() {

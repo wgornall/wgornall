@@ -254,11 +254,24 @@
   function updateFrozenColumns() {
     const table = $('.rankings-table'), scroller = $('.table-scroll');
     const first = table?.querySelector('thead .rank-col');
-    if (!first || !scroller) return;
+    if (!first || !scroller || !scroller.clientWidth) return;
+    const viewport = scroller.clientWidth, compact = viewport <= 640;
+    const rankWidth = compact ? 36 : 31;
+    const schoolWidth = Math.max(0, Math.min(compact ? 165 : 285, viewport * 0.4, viewport * 0.5 - rankWidth));
+    const graduateWidth = compact ? 42 : 55, sourceWidth = compact ? 32 : 34.6667;
+    const sourceTotal = SOURCE_IDS.length * SOURCE_WINDOWS.length * sourceWidth;
+    const scoreWidth = compact
+      ? Math.max(40, (viewport - rankWidth - schoolWidth) / SCORE_WINDOWS.length)
+      : Math.max(64, (viewport - rankWidth - schoolWidth - graduateWidth - sourceTotal) / SCORE_WINDOWS.length);
+    const tableWidth = rankWidth + schoolWidth + SCORE_WINDOWS.length * scoreWidth + graduateWidth + sourceTotal;
+    table.classList.toggle('compact-table', compact);
+    for (const [name, width] of Object.entries({table:tableWidth, rank:rankWidth, school:schoolWidth, window:scoreWidth, graduate:graduateWidth, source:sourceWidth})) {
+      table.style.setProperty(`--ranking-${name}-width`, `${width}px`);
+    }
+    table.style.setProperty('--table-viewport-width', `${viewport}px`);
     table.style.setProperty('--frozen-rank-width', `${first.getBoundingClientRect().width}px`);
     const school = table.querySelector('thead .school-col');
     scroller.style.scrollPaddingLeft = `${first.getBoundingClientRect().width + school.getBoundingClientRect().width + 8}px`;
-    table.style.setProperty('--table-viewport-width', `${scroller.clientWidth}px`);
   }
   function renderTable() {
     for (const id of ['#coverage-popover', '#self-placement-popover']) {
@@ -325,7 +338,7 @@
     })).join('');
     return `<tr class="program-row ${row.isUnit ? 'unit-row' : 'university-row'}${hasUnits ? ' has-units' : ''}${open ? ' open' : ''}${!row.isUnit && rank && rank <= 3 ? ' top-ranked' : ''}" data-program="${escape(sid)}" data-group="${escape(groupId)}"${row.isUnit ? ` data-parent="${escape(row.parentSchoolId)}"` : ''}>
       <td class="rank-col frozen-rank${sort.key === 'rank' ? ' active-score-column' : ''}"><span class="rank-number">${row.isUnit ? '<span class="sr-only">Subunit, included in university total</span>' : rankMarkup(displayedRankText(row))}</span></td>
-      <td class="school-cell frozen-school"><button class="school-button" data-expand="${escape(groupId)}" data-member="${escape(sid)}" aria-expanded="${open}"${open ? ` aria-controls="detail-${escape(groupId)}"` : ''} title="${escape(row.school.name)}: ${open ? 'collapse' : 'expand'} university placements">${row.isUnit ? '' : `<span class="group-caret" aria-hidden="true">${open ? '−' : '+'}</span>`}${escape(programLabel(row))}</button>${row.isUnit ? '' : `<span class="school-mobile-flag" role="img" aria-label="${escape(row.school.country || 'Country')}">${countryFlag(row.school)}</span>`}${row.isUnit ? '' : `<span class="school-location"> <em>${escape(locationLabel(row.school))}</em></span>`}</td>
+      <td class="school-cell frozen-school"><button class="school-button" data-expand="${escape(groupId)}" data-member="${escape(sid)}" aria-expanded="${open}"${open ? ` aria-controls="detail-${escape(groupId)}"` : ''} title="${escape(row.school.name)}: ${open ? 'collapse' : 'expand'} university placements">${row.isUnit ? '' : `<span class="group-caret" aria-hidden="true">${open ? '−' : '+'}</span>`}<span class="school-name">${escape(programLabel(row))}</span></button>${row.isUnit ? '' : `<span class="school-mobile-flag" role="img" aria-label="${escape(row.school.country || 'Country')}">${countryFlag(row.school)}</span>`}${row.isUnit ? '' : `<span class="school-location"> <em>${escape(locationLabel(row.school))}</em></span>`}</td>
 
       ${SCORE_WINDOWS.map(years => scoreCell(row.windows[String(years)], years)).join('')}
       <td class="graduate-number${sort.key === 'graduates' ? ' active-score-column' : ''}">${number(row.allTimeGraduateCount)}</td>

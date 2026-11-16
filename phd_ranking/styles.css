@@ -305,3 +305,25 @@
 .graduates-table .coverage-trigger{font-size:75%}.graduates-table .self-placement,.graduates-table .joint-credit{display:inline;margin-left:6px;margin-top:0}
 
 .self-cap-trigger{font:inherit;color:inherit;background:none;border:0;border-bottom:1px dotted currentColor;padding:2px 0;white-space:nowrap}.self-cap-trigger:hover{color:var(--teal-dark)}.self-cap-trigger s{opacity:.55;margin-right:4px}
+
+/* Explicit column totals prevent the fixed table layout from inflating the frozen school column. */
+.rankings-table,.rankings-table.has-subscores{width:var(--ranking-table-width,100%);min-width:0}
+.rankings-table .rank-col{width:var(--ranking-rank-width,31px)}
+.rankings-table .school-col{width:var(--ranking-school-width,min(285px,40vw))}
+.rankings-table .window-col{width:var(--ranking-window-width,64px)}
+.rankings-table .graduate-col{width:var(--ranking-graduate-width,55px)}
+.rankings-table .source-col{width:var(--ranking-source-width,34.6667px)}
+.rankings-table .school-button .school-name{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.rankings-table .institution-heading{overflow:hidden;min-width:0}
+.rankings-table.compact-table>thead>tr>th,.rankings-table.compact-table>tbody>.program-row>td{padding-left:2px;padding-right:3px}
+.rankings-table.compact-table .rank-col{padding-left:3px!important;padding-right:2px!important}
+.rankings-table.compact-table .school-cell .school-button{max-width:calc(100% - 20px);gap:4px;font-size:11px}
+.rankings-table.compact-table .unit-row .school-cell{padding-left:10px}
+.rankings-table.compact-table .unit-row .school-button{display:flex;width:100%;max-width:100%;font-size:10px}
+.rankings-table.compact-table .score-number{font-size:11px}
+.rankings-table.compact-table .unit-row .score-number{font-size:10px}
+.rankings-table.compact-table .sort-button,.rankings-table.compact-table>thead>.metric-group-row>.metric-group-heading{font-size:9px}
+.rankings-table.compact-table .scoring-prompt,.rankings-table.compact-table .placement-period-prompt{font-size:8px}
+.rankings-table.compact-table .scoring-prompt{white-space:normal}
+@media(max-width:640px){.page-shell{padding-left:8px;padding-right:8px}}
+@media print{.rankings-table,.rankings-table.has-subscores{width:100%;min-width:0}}

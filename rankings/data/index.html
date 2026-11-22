@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head><base href="/rankings/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/rankings/favicon.ico" sizes="any">
+  <title>Data | Finance research &amp; placements</title>
+  <link rel="stylesheet" href="/rankings/styles.css">
+  <link rel="stylesheet" href="/rankings/demo-site.css?v=6d9a9f01df1560ec">
+  <script src="/rankings/site-config.js" defer></script><script src="/rankings/privacy.js" defer></script>
+  <script src="/rankings/table-download.js?v=cdd98cbb821a18a3" defer></script>
+  <script src="/rankings/share-buttons.js?v=97439e7938ce833f" defer></script>
+</head>
+<body>
+<nav class="demo-nav demo-nav-card" aria-label="Rankings navigation"><div class="demo-nav-inner"><img class="demo-nav-logo" src="/rankings/graduation-cap.png" alt="" width="60" height="60"><strong>Business and economics research rankings and tenure data</strong><ul class="demo-site-links" aria-label="Site sections"><li><a href="/rankings/research_rankings/finance/" data-site-view="research">Research ranking</a></li><li><a href="/rankings/phd_rankings/finance/" data-site-view="phd">PhD ranking</a></li><li><a href="/rankings/tenure_norms/finance/" data-site-view="tenure">Tenure norms</a></li><li><a href="/rankings/faculty_rankings/finance/" data-site-view="faculty">Faculty ranking</a></li><li><a href="/rankings/data/" aria-current="page">Data</a></li></ul></div></nav>
+<main class="demo-main demo-research-shell">
+
+
+<section class="results-card demo-data-card" aria-labelledby="data-title">
+  <div class="ranking-card-header"><h1 class="ranking-card-title" id="data-title">Data sources and coverage</h1></div>
+  <div class="demo-data-body">
+    <div>
+      <h2>Finance publication, PhD, and employment records</h2>
+      <aside class="demo-data-warning" aria-label="Data quality warning"><strong>Warning:</strong> All finance data are gathered by me on a best-effort basis. I have done my best to ensure accuracy as of November 15, 2026. Check all data points carefully.</aside>
+      <p id="data">The placement snapshot includes <span id="finance-faculty-count">4,711</span> faculty and placement-list records across <span id="employing-university-count">382</span> employing universities. We used LLMs to help collect records from university directories, faculty profiles, CVs, and selected PhD placement pages. Coverage varies by school, and the snapshot generally misses graduates who left academia. Publication counts come from a reconciled article catalog. The finance tenure charts show publications and citations at tenure grant. Dated promotions to associate professor serve as proxies when grant dates are unavailable. We exclude promotions that the evidence identifies as untenured.</p>
+      <p><a id="data-download-link" href="/rankings/placement-data.json?v=167752abc166b6d9" download="finance-placement-public-data.json">Download the finance data (JSON)</a></p>
+      <p><a href="/rankings/finance-citation-records.json" download>Download matched finance citation records since 2005 (JSON)</a></p>
+      <p id="remove-your-data"><button class="inline-action" data-remove-record aria-controls="removal-dialog" aria-haspopup="dialog" type="button">Remove your data here</button>.</p>
+      <p id="corrections">Submit finance data corrections as a pull request to <a href="https://github.com/wgornall/wgornall">the GitHub repository</a>. Include the person’s name or record ID, the field to correct, and a public source such as an official profile or CV.</p>
+    </div>
+    <div>
+      <h2>Publication, PhD, and employment records in other fields</h2>
+      <aside id="atlas-data-warning" class="demo-data-warning" aria-label="Data quality warning">
+    <strong>WARNING:</strong> Data for fields other than finance come from the <a href="https://github.com/econ-faculty/econ-faculty.github.io/tree/33747b8e2f7e1a455bb2fbd3c0965a8feab0df35/data">Econ Atlas snapshot</a>. Check all data points carefully.
+  </aside>
+      <p>The snapshot includes faculty, PhD, and appointment records for accounting, economics, marketing, management, and operations and information systems. The <a href="https://github.com/econ-faculty/econ-faculty.github.io/blob/33747b8e2f7e1a455bb2fbd3c0965a8feab0df35/site/papers.json">Econ Atlas paper index</a> supplies publication records. The tenure pages use within-school promotions to associate professor as tenure proxies.</p>
+      <p>I do not maintain or control these data. Submit corrections or removal requests to the <a href="https://github.com/econ-faculty/econ-faculty.github.io/issues">Econ Atlas maintainers</a>.</p>
+    </div>
+  </div>
+</section>
+<dialog aria-describedby="removal-intro" aria-labelledby="removal-title" class="detail-dialog removal-dialog" id="removal-dialog">
+<div class="dialog-header"><span class="eyebrow">PRIVATE RECORD REQUEST</span><button aria-label="Close removal request" class="icon-button" id="removal-close" type="button">×</button></div>
+<h2 id="removal-title">Remove me from the data</h2>
+<p id="removal-intro">Prepare a private removal request for your record or one you are authorized to manage. No explanation is required.</p>
+
+<form autocomplete="off" id="removal-form">
+<div class="removal-fields">
+<label for="removal-name">Professional name <span class="required-label">Required</span><input autocomplete="off" id="removal-name" maxlength="180" name="professional-name" required="" type="text"/></label>
+<label for="removal-record">Record ID <span class="optional-label">Optional</span><input autocomplete="off" id="removal-record" maxlength="120" name="record-id" placeholder="If known" type="text"/></label>
+<label for="removal-profile">Public professional profile <span class="optional-label">Optional</span><input autocomplete="off" id="removal-profile" maxlength="800" name="profile" placeholder="https://…" type="url"/></label>
+<label for="removal-note">Record clarification <span class="optional-label">Optional</span><textarea id="removal-note" maxlength="1500" name="note" placeholder="Help identify the record. Do not attach sensitive documents." rows="2"></textarea></label>
+</div>
+<p class="paper-note" id="removal-contact-note"></p>
+<details class="removal-draft" id="removal-draft"><summary>Review the request text</summary><textarea aria-label="Unsent removal request text" id="removal-preview" readonly="" rows="8" spellcheck="false"></textarea></details>
+<div class="removal-actions"><button class="primary-button" id="removal-email" type="submit">Open email draft ↗</button><button class="secondary-button" id="removal-copy" type="button">Copy request</button><button class="secondary-button" id="removal-download" type="button">Save request</button></div>
+<p class="privacy-local-note">This form stays in your browser. Send the email yourself; opening a draft does not submit a request.</p>
+<p aria-live="polite" class="removal-status" id="removal-status" role="status"></p>
+</form>
+</dialog>
+</main>
+ <section class="site-disclosures" aria-label="Interpretation and disclosures"><p>These data are meant to help faculty, students, and prospective students start their research. Important decisions should be based on the actual data points after you have checked them, not the scores and certainly not the ranks. I am <a href="https://willgornall.com/">Will Gornall</a>, a finance professor - I focused on the <a href="/rankings/data/">finance data</a> and rankings and added other rankings on a best-effort basis using the <a href="https://econ-faculty.github.io/">econ-atlas data</a>. I am also a Stanford GSB graduate, a UBC professor, and the director of UBC’s finance PhD program which creates biases, however, I have made what I see as neutral methodological choices and allowed you to customize them. This is an independent project, developed without institutional input from UBC.</p><p class="site-disclosures-signature">- <a href="https://willgornall.com/">Will Gornall</a></p></section>
+</body>
+</html>

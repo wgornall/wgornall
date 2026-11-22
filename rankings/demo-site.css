@@ -1,0 +1,451 @@
+:root{color-scheme:light;--demo-ink:#172d35;--demo-teal:#12695f;--demo-border:#d8e3e0;--demo-muted:#4d6367;--demo-main-gutter:clamp(1rem,3vw,2rem);--demo-surface:#fff;--demo-subtle:#f2f6f4;--demo-radius:.5rem;--demo-control-radius:.35rem;--demo-control-border:#a3b7b3}
+.demo-nav{background:#142f36;color:#fff}
+html{scrollbar-gutter:stable}
+.demo-nav-inner{max-width:948px;margin:0 auto;padding:.95rem 24px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:.42rem 1rem}
+.demo-nav-inner>strong,.demo-nav-inner>ul{grid-column:1}
+.demo-nav-logo{grid-column:2;grid-row:1 / span 2;width:clamp(2.25rem,5vw,3.75rem);height:auto;justify-self:end}
+.demo-nav strong{font-size:clamp(1.05rem,2vw,1.3rem);letter-spacing:-.015em;line-height:1.25}
+.demo-nav ul{display:flex;gap:.26rem 0;flex-wrap:wrap;padding:0;margin:0;list-style:none}
+.demo-nav li{display:flex;align-items:center}
+.demo-nav li+li::before{content:"";height:.85em;border-left:1px solid #83a4a7;margin:0 .52rem}
+.demo-nav a{color:#e8f4f2;text-decoration:none;font-size:.9rem;font-weight:600}
+.demo-nav a:hover{color:white;text-decoration:underline;text-underline-offset:.22em}
+.demo-nav a[aria-current]{color:#fff;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.3em}
+.demo-site-links a{font-size:.9rem;font-weight:600}
+.demo-field-links a{font-size:.9rem;font-weight:600}
+.demo-region-links a{font-size:.85rem;font-weight:500}
+.demo-author-footer{max-width:calc(900px + 2 * var(--demo-main-gutter));margin-inline:auto;padding:.25rem var(--demo-main-gutter) 1.5rem;display:flex;justify-content:flex-end;align-items:center;gap:.7rem;font-size:.85rem}
+.site-disclosures{box-sizing:border-box;max-width:900px;margin:1.25rem auto .75rem;padding:1rem 1.1rem;border:1px solid var(--demo-border);color:#000;line-height:1.6;font-size:.875rem}
+.site-disclosures p{margin:0}
+.site-disclosures a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.site-disclosures .site-disclosures-signature{margin-top:.55rem;text-align:right}
+@media(max-width:940px){.site-disclosures{margin-left:var(--demo-main-gutter);margin-right:var(--demo-main-gutter)}}
+.demo-author-footer a{color:var(--demo-muted);text-underline-offset:2px}
+.demo-author-footer .demo-footer-data{border:1px solid var(--demo-border);border-radius:.35rem;background:#fff;color:var(--demo-teal);padding:.3rem .55rem;font-weight:600;text-decoration:none}
+.demo-author-footer .demo-footer-data:hover{background:#edf4f1}
+.demo-main{max-width:1280px;margin:0 auto;padding:clamp(1.25rem,3.6vw,3.3rem) var(--demo-main-gutter)}
+@media(max-width:850px){.demo-nav-inner{padding-inline:16px}}
+@media(max-width:640px){.demo-nav-inner{padding-inline:8px}.demo-nav li+li::before{display:none}.demo-nav ul{gap:.38rem .8rem}}
+.demo-main h1{font-size:clamp(2rem,4vw,3.05rem);margin:0 0 .5rem;color:var(--demo-ink);line-height:1.1}
+.demo-lead{font-size:1rem;color:var(--demo-muted);margin:0 0 1.8rem}
+.demo-section{border:1px solid var(--demo-border);padding:clamp(.9rem,2vw,1.6rem);margin:0 0 1.25rem;min-width:0}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) .results-card,.demo-section,.site-disclosures{border-color:var(--demo-border);border-radius:var(--demo-radius);background:var(--demo-surface)}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) .ranking-card-header{border-color:var(--demo-border)}
+.demo-alumni{margin:1.4rem 0 0}
+.demo-section h2,.demo-section>div>h3{font-size:1.3rem;color:var(--demo-ink);margin:0 0 .55rem}
+.demo-section p{line-height:1.45}
+.demo-note{margin:.35rem 0 1rem;color:var(--demo-muted);font-size:.92rem}
+.demo-table-wrap,.demo-main .table-responsive{overflow-x:auto}
+.demo-table,.demo-main .table{border-collapse:collapse;width:100%;font-size:.91rem;color:var(--demo-ink)}
+.demo-table th,.demo-table td,.demo-main .table th,.demo-main .table td{padding:.65rem .6rem;border-block-end:1px solid var(--demo-border);text-align:left;vertical-align:top}
+.demo-table thead,.demo-main .table thead{background:#edf4f1}
+.demo-table tr:hover td,.demo-main .table tr:hover td{background:#f4f8f6}
+.demo-table th button{font:inherit;font-weight:700;color:inherit;border:0;background:none;padding:0;text-align:left}
+.demo-table td small{display:block;color:var(--demo-muted);margin-top:.2rem}
+.demo-table a{color:var(--demo-teal);text-decoration:underline;text-underline-offset:2px}
+.demo-table .demo-numeric,.demo-main .table .text-end{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.demo-controls,.demo-pager,.viz-row{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;margin:.65rem 0}
+.demo-controls label,.demo-main .form-label{display:grid;gap:.28rem;font-size:.9rem;font-weight:600}
+.demo-controls input,.demo-controls select,.demo-main .form-control{width:min(19rem,100%);border:1px solid var(--demo-control-border);padding:.48rem .6rem;font-size:1rem;min-height:2.45rem}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.demo-controls input,.demo-controls select,.form-control,.tenure-selectors select){border-color:var(--demo-control-border);border-radius:var(--demo-control-radius);background-color:var(--demo-surface);color:var(--demo-ink)}
+.demo-pager button,.demo-main .btn{border:1px solid var(--demo-control-border);padding:.42rem .62rem;font-size:.9rem;font-weight:600;cursor:pointer}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.secondary-button,.demo-pager button,.btn){border-color:var(--demo-control-border);border-radius:var(--demo-control-radius);background:var(--demo-surface);color:var(--demo-ink)}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.secondary-button,.demo-pager button,.btn):hover:not(:disabled){background:var(--demo-subtle);border-color:var(--demo-teal)}
+.demo-pager button:disabled,.demo-main .btn:disabled{opacity:.48;cursor:default}
+.demo-pager span,.demo-main [data-status]{color:var(--demo-muted);font-size:.9rem}
+.demo-main .peer-tooltip{background:white;border:1px solid var(--demo-border);color:var(--demo-ink)}
+.demo-main .peer-publications{border:1px solid var(--demo-border);border-radius:.65rem}
+.demo-main .person-focus-guide{pointer-events:none;stroke:#704199;stroke-opacity:.95;fill:none;stroke-width:2.8;stroke-opacity:.95}
+.demo-main .facet-caption{font-size:.88rem;color:var(--demo-muted);margin:.25rem 0 0}
+.demo-main .focus-marker{paint-order:stroke;stroke:#704199!important;stroke-width:2.2px}
+.demo-main .peer-list li{max-width:100%}
+.demo-main .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.demo-main :focus-visible,.demo-nav :focus-visible,.demo-alumni :focus-visible{outline:2px solid #147d70;outline-offset:2px}
+@media(max-width:600px){.demo-table td,.demo-table th{padding:.55rem .45rem}.demo-main .peer-panel svg{min-height:200px}}
+
+.demo-placement-cohort{margin:0;padding:0 14px 12px;align-items:flex-end}
+.demo-placement-cohort fieldset{display:flex;align-items:center;flex-wrap:wrap;gap:.45rem;margin:0;padding:0;border:0}
+.demo-placement-cohort fieldset[hidden]{display:none}
+.demo-placement-cohort fieldset label{display:flex;align-items:center;gap:.45rem}
+.demo-placement-cohort input{width:5.15rem}
+.demo-placement-cohort input::-webkit-inner-spin-button{opacity:1}
+.demo-research-filters,.demo-placement-cohort.demo-phd-sentence{margin:0 14px 12px;padding:.5rem .65rem;background:var(--demo-subtle);border:1px solid var(--demo-border);border-radius:var(--demo-control-radius)}
+.demo-research-filters{align-items:end;gap:.5rem}
+.grant-distributions h3 + .demo-research-filters,.demo-atlas-tenure-card h3 + .demo-research-filters{margin-top:.6rem}
+.demo-tenure-card #finance-tenure-peers .grant-distributions{border-top:1px solid var(--demo-border)}
+.demo-research-filters label{gap:.2rem;color:var(--demo-muted);font-size:.72rem;line-height:1.2}
+.demo-research-filters select{width:auto;max-width:100%;min-height:2rem;padding:.3rem .5rem;font-size:.85rem}
+.demo-phd-filters input{width:5.15rem;min-height:2rem;padding:.3rem .5rem;font-size:.85rem}
+.demo-filter-note{align-self:center;color:var(--demo-muted);font-size:.8rem}
+.demo-placement-table .scoring-prompt,.demo-placement-table .placement-period-prompt{display:none}
+.demo-placement-table>thead>.metric-group-row>.numeric-col{padding:8px 5px;text-align:right}
+.demo-placement-table .numeric-col .sort-button{display:inline-flex;gap:3px;align-items:center;justify-content:flex-end;text-align:right;white-space:normal}
+.rankings-table .demo-graduates-table{min-width:560px}
+.rankings-table .demo-graduates-table th:nth-child(1){width:25%}
+.rankings-table .demo-graduates-table th:nth-child(2){width:18%}
+.rankings-table .demo-graduates-table th:nth-child(3){width:13%}
+.rankings-table .demo-graduates-table th:nth-child(4){width:27%}
+.rankings-table .demo-graduates-table :is(th,td):nth-child(5){text-align:right}
+.demo-graduate-source{min-width:1.6rem;min-height:1.6rem;font-size:1rem;line-height:1}
+
+.demo-nav+.page-shell{padding-top:1rem}
+.demo-finance-phd-shell{padding-top:1rem}
+.demo-finance-phd-shell .table-scroll{container-type:inline-size}
+.atlas-history-card{padding:14px;overflow:hidden}
+.atlas-history-card .ranking-card-header{padding:0 0 8px}
+.atlas-history-card svg{display:block;width:100%;height:auto}
+.atlas-history-note{margin:.35rem 0;color:var(--demo-muted);font-size:.8rem;line-height:1.45}
+.atlas-history-note span{display:inline-block;margin-right:.65rem}
+.atlas-field-table{min-width:680px}
+:is(.demo-atlas-card,.demo-tenure-card,.demo-data-card) .ranking-card-title{margin:0;font-size:16px;line-height:1.4}
+.demo-atlas-card .ranking-card-header .search-field{width:min(100%,190px)}
+.demo-atlas-card .ranking-card-header .search-field input{width:100%}
+.demo-atlas-phd-card>.table-scroll{container-type:inline-size}
+.rankings-table.demo-atlas-phd-table{
+  --atlas-phd-frozen-width:calc(100cqi / 3);
+  --ranking-rank-width:31px;
+  --frozen-rank-width:var(--ranking-rank-width);
+  --ranking-school-width:calc(var(--atlas-phd-frozen-width) - var(--ranking-rank-width));
+  --ranking-tracked-width:70px;
+  --ranking-window-width:max(86px,calc((100cqi - var(--atlas-phd-frozen-width) - var(--ranking-tracked-width)) / 2));
+  --ranking-table-width:calc(var(--atlas-phd-frozen-width) + var(--ranking-tracked-width) + 2 * var(--ranking-window-width));
+}
+.demo-atlas-phd-table th[data-column="count"]{width:var(--ranking-tracked-width)}
+.demo-atlas-phd-table thead :is(.rank-col,.school-col){vertical-align:bottom}
+.demo-atlas-phd-table .school-cell .school-button{width:auto;max-width:60%;text-align:left;color:var(--teal-dark)}
+.demo-atlas-phd-table .school-location{margin-left:5px}
+.demo-atlas-phd-table .detail-panel{width:min(100%,100cqi)}
+@media(max-width:640px){
+  :is(.demo-atlas-card,.demo-tenure-card,.demo-data-card) .ranking-card-title{font-size:14px}
+}
+@container(max-width:640px){
+  .rankings-table.demo-atlas-phd-table{--atlas-phd-frozen-width:50cqi;--ranking-rank-width:36px;--ranking-tracked-width:54px}
+  .demo-atlas-phd-table .school-cell .school-button{max-width:100%}
+  /* Finance's initial snapshot includes desktop inline measurements. */
+  .demo-finance-phd-shell .rankings-table.demo-atlas-phd-table {
+    --ranking-rank-width:36px !important;
+    --frozen-rank-width:36px !important;
+    --ranking-school-width:calc(50cqi - 36px) !important;
+    --ranking-tracked-width:54px !important;
+    --ranking-window-width:max(86px,calc((50cqi - 54px) / 2)) !important;
+    --ranking-table-width:calc(50cqi + 54px + 2 * max(86px,calc((50cqi - 54px) / 2))) !important;
+  }
+}
+.atlas-field-table th[aria-sort] button::after{content:" ↓";white-space:nowrap}
+.atlas-field-table th[aria-sort=ascending] button::after{content:" ↑"}
+.demo-publication-options{margin:0;padding:0 14px 12px;align-items:flex-end}
+.demo-publication-options[hidden]{display:none}
+
+.demo-placement-table col.demo-tracked-col{width:var(--ranking-tracked-width,70px)}
+.demo-data-body{display:grid;gap:.7rem;padding:0 14px 12px;font-size:.9rem;line-height:1.65}
+.demo-data-body h2{margin:0 0 .2rem;font-size:1rem;line-height:1.4}
+.demo-data-body p{margin:0}
+.demo-data-body p+p{margin-top:.35rem}
+.demo-data-body a{color:var(--demo-teal);text-underline-offset:2px}
+@media(max-width:640px){.demo-data-body{padding-inline:8px}}
+.demo-research-shell{padding-top:1rem}
+.demo-research-controls select[data-research-school]{width:min(22rem,100%)}
+.demo-research-card .table-scroll{container-type:inline-size}
+.ranking-title-source{font-size:.8em;font-weight:500;color:var(--demo-teal);text-underline-offset:2px}
+.demo-research-table{min-width:670px;--ranking-rank-width:42px;--frozen-rank-width:42px;--ranking-school-width:29%}
+.demo-research-table>thead>tr>.numeric-col{padding:8px;text-align:right}
+.demo-research-table .sort-button{display:inline-flex;gap:3px;align-items:center;white-space:normal;text-align:right}
+.research-school-heading{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px}
+.research-school-heading button{padding:2px 6px;font-size:11px;line-height:1.4}
+.research-school-heading button.filter-active{background:#eaf5f2;border-color:var(--demo-teal);color:var(--demo-teal)}
+.demo-research-table .school-cell .school-button{width:100%;max-width:100%;text-align:left}
+.demo-research-table .school-cell .school-name{flex:0 1 auto;font-weight:650}
+.research-country-flag{flex:none;font-size:14px;line-height:1}
+.rankings-table .school-cell .school-button .school-name{flex:0 1 auto}
+.demo-research-table .research-unit-label{display:block;font-size:10px;font-weight:400;line-height:1.3}
+.demo-research-table .school-cell .research-unit-label{margin-left:17px;color:var(--muted)}
+.demo-research-table .research-detail-panel{width:min(100%,100cqi)}
+.research-detail-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr));gap:12px}
+.research-detail-groups h4{font-size:12px;margin:.3rem 0}
+.research-detail-groups ul{padding-left:1.1rem;margin:.3rem 0;font-size:.78rem}
+@media(max-width:640px){.demo-research-table{min-width:520px;--ranking-rank-width:36px;--frozen-rank-width:36px;--ranking-school-width:min(144px,38vw)}}
+.demo-table-notes{padding:10px 14px 12px;border-top:1px solid var(--demo-border);color:#000;font-size:.85rem;line-height:1.55}
+.demo-table-notes p{margin:.3rem 0}
+.demo-table-notes strong{color:inherit}
+.demo-table-notes a{color:var(--demo-teal);text-underline-offset:2px}
+.history-table-caption .ranking-caption{color:#000;font-size:.85rem;line-height:1.55}
+.demo-research-card+.demo-research-card{margin-top:1.25rem}
+
+.demo-phd-sentence{align-items:center;gap:.28rem .35rem;color:var(--demo-muted);font-size:.85rem}
+.demo-phd-sentence :is(input,select){font-size:inherit}
+.demo-phd-sentence select{width:auto;max-width:100%}
+.demo-phd-sentence .demo-phd-comma{margin-left:-.35rem}
+.demo-atlas-card .search-field[hidden],.demo-atlas-controls[hidden],.demo-atlas-card .ranking-pagination[hidden],.demo-atlas-card .ranking-pagination [hidden],.demo-atlas-card .mobile-scroll-note[hidden]{display:none}
+.demo-phd-sentence .atlas-subfield-control{display:inline-flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin-right:.45rem;font:inherit}
+.atlas-subfield-control select{max-width:min(16rem,100%)}
+.demo-atlas-controls{align-items:flex-end}
+.demo-atlas-controls input[type=number]{width:5.3rem}
+.demo-phd-sentence select#atlas-program{width:min(12rem,100%);text-overflow:ellipsis}
+.demo-tenure-card,.demo-atlas-tenure-card{--tenure-focal:#1749a5;--tenure-peer:#b91c1c;--tenure-percentile:#000}
+.demo-tenure-card #finance-tenure-peers .percentile-line{stroke:var(--tenure-percentile)}
+.demo-tenure-card .focus-marker{stroke:var(--demo-ink)!important}
+.demo-tenure-card>.demo-note,.demo-atlas-tenure-card>#atlas-tenure-intro{margin-inline:14px}
+.demo-tenure-content.demo-section{border:0;margin:0;padding:0 14px 14px}
+.demo-tenure-content #finance-tenure-peers{grid-template-columns:minmax(0,1fr)}
+.demo-atlas-tenure-card .table-scroll[hidden]{display:none}
+.demo-atlas-tenure-card>.atlas-subfield-control{display:grid;gap:.25rem;margin:0 14px .75rem;font-weight:650}
+.demo-atlas-tenure-card>.atlas-subfield-control select{width:min(19rem,100%)}
+.demo-data-warning{margin:0 14px 12px;padding:.65rem .8rem;background:#fff4c2;border:1px solid #dfc470;border-radius:.35rem;color:#4d3900;line-height:1.5}
+.demo-data-warning a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.demo-data-body .demo-data-warning{margin:.35rem 0 .65rem;padding:0;background:transparent;border:0;border-radius:0;color:#a31d1d;font-weight:700}
+.demo-atlas-chart{padding:0 14px 14px}
+.demo-atlas-chart h3{margin:.3rem 0 .45rem;font-size:1.1rem}
+.demo-atlas-chart h4{margin:.75rem 0 .4rem}
+.demo-atlas-chart .peer-panel{border:1px solid var(--demo-border);border-radius:.4rem;padding:.55rem}
+.tenure-outcome-chart{display:block;width:100%}
+.tenure-outcome-chart text,.demo-tenure-card #finance-tenure-peers svg text{font-family:inherit;font-size:10.5px;fill:currentColor}
+.tenure-outcome-chart .grid{stroke:currentColor;stroke-opacity:.16}
+.tenure-outcome-chart .axis{stroke:currentColor;stroke-opacity:.55}
+.tenure-outcome-chart .percentile-line{stroke:var(--tenure-percentile)}
+.tenure-outcome-chart .percentile-label,.demo-tenure-card #finance-tenure-peers .percentile-label{font-size:10px;fill:var(--tenure-percentile);font-weight:400;paint-order:stroke;stroke:var(--background,white);stroke-width:3px;pointer-events:none}
+.tenure-outcome-chart .percentile-line:focus-visible{stroke-width:3}
+.tenure-outcome-chart .dot-hit{cursor:pointer}
+.tenure-outcome-chart .tenure-publication-point,.tenure-outcome-chart .tenure-followup-arrow,.demo-tenure-card .grant-case{opacity:.75}
+.tenure-outcome-chart .dot-hit:focus-visible{stroke:var(--demo-ink);stroke-width:2}
+.atlas-publication-dialog{max-width:min(90vw,46rem);max-height:85vh;padding:1rem}
+.atlas-publication-dialog .peer-publication-header{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.atlas-publication-dialog li{margin:.4rem 0}
+.atlas-publication-dialog li small{display:block;color:var(--demo-muted)}
+.tenure-school-controls{display:grid;gap:.55rem;min-width:0}
+.demo-atlas-card .tenure-school-controls{padding:0 14px 12px}
+.tenure-school-controls[hidden],.tenure-peer-editor[hidden]{display:none}
+.tenure-school-controls form,.tenure-school-controls form>label{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem .55rem}
+.tenure-school-controls form>label{font-weight:650}
+.tenure-school-controls .form-control{width:min(19rem,75vw)}
+.tenure-school-controls form.tenure-selectors{display:flex;align-items:end;flex-wrap:wrap;gap:.6rem 1rem}
+.tenure-school-controls form.tenure-selectors>label{display:grid;gap:.25rem;align-items:start}
+.tenure-school-controls .tenure-selectors select{min-width:12rem;padding:.45rem .6rem;border:1px solid var(--demo-control-border)}
+.tenure-peer-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:.35rem}
+.tenure-peer-editor .tenure-peer-row .peer-list{margin:0}
+.tenure-peer-summary{line-height:1.7}
+.tenure-peer-summary .btn{margin-left:.35rem}
+.tenure-peer-editor{padding:.65rem .75rem;background:var(--demo-subtle);border:1px solid var(--demo-border);border-radius:var(--demo-control-radius)}
+.tenure-peer-editor .peer-list{display:flex;flex-wrap:wrap;gap:.3rem;margin:0 0 .5rem;padding:0;list-style:none}
+.tenure-peer-editor .peer-chip{text-align:left}
+.tenure-peer-editor form{margin:0 0 .45rem}
+.journal-custom-editor{max-width:100%;margin:0 14px 12px;padding:.4rem .6rem}
+.journal-custom-editor label,.journal-custom-current{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem}
+.journal-custom-editor label{font-weight:700}
+.journal-custom-editor input{width:min(20rem,75vw)}
+:is(.journal-custom-editor,.peer-custom-editor) input::-webkit-calendar-picker-indicator{display:none!important}
+.journal-custom-current{margin-top:.3rem}
+.journal-custom-chips{display:contents}
+.journal-custom-chips button,.peer-custom-editor .peer-chip{font-size:.75rem;min-height:0;padding:.25rem .45rem}
+.peer-custom-editor{padding:.4rem .6rem}
+.tenure-school-controls .peer-custom-editor form{margin:0}
+.tenure-school-controls .peer-custom-editor form>label{display:flex;align-items:center;gap:.4rem}
+.tenure-school-controls .peer-custom-editor input{width:min(20rem,75vw);min-height:2rem;padding:.3rem .5rem;border:1px solid var(--demo-control-border);border-radius:var(--demo-control-radius);background:var(--demo-surface);color:var(--demo-ink);font:inherit;font-size:.85rem}
+.peer-custom-editor .tenure-peer-row{align-items:center;gap:.4rem;margin-top:.3rem}
+.peer-custom-editor .tenure-peer-row .peer-list,.peer-custom-editor .peer-list li{display:contents}
+#finance-tenure-peers .peer-custom-editor .peer-list{display:contents}
+.tenure-school-controls [role=status]:not(.sr-only){margin:0;color:var(--demo-muted);font-size:.85rem}
+.tenure-chart-key{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem 1rem;margin:.25rem 0 .9rem}
+.tenure-chart-key>span{display:inline-flex;align-items:center;gap:.3em}
+.tenure-chart-key i{flex:none;width:1em;border-top:2px solid}
+.tenure-chart-key :is(.percentile-p25,.percentile-p50,.percentile-p75){color:var(--tenure-percentile)}
+.tenure-chart-key :is(.percentile-p25,.percentile-p75){border-top-style:dotted}
+.tenure-arrow-key{font-size:1.1em;line-height:1}
+.tenure-focal-key{color:var(--tenure-focal)}
+.tenure-peer-key{color:var(--tenure-peer)}
+:is(#finance-tenure-peers,.demo-atlas-tenure-card) .tenure-chart-key :is(.tenure-focal-key,.tenure-peer-key){
+  width:.65em;height:.65em;border:0;border-radius:50%;background:currentColor
+}
+.tenure-case-table{padding:0 14px 10px;border-top:1px solid var(--demo-border)}
+.tenure-case-table[hidden]{display:none}
+.tenure-case-table h3{margin:12px 0 6px;font-size:1rem}
+.tenure-case-table .demo-table{min-width:760px}
+.tenure-case-timeline{min-width:17rem;line-height:1.45}
+.tenure-case-timeline abbr{white-space:nowrap;text-underline-offset:.12em}
+.tenure-case-table .demo-table :is(th,td){padding:.5rem .45rem}
+.tenure-case-table .demo-table :is(th,td):nth-child(n+3):nth-child(-n+5){text-align:right;font-variant-numeric:tabular-nums}
+.demo-phd-sentence[hidden]{display:none}
+.demo-phd-sentence input[type=number]{width:5.15rem}
+
+.demo-faculty-shell{padding-top:1rem}
+.demo-faculty-sentence select[data-faculty-program]{width:min(12rem,100%);text-overflow:ellipsis}
+.rankings-table.demo-faculty-table{min-width:680px;--ranking-rank-width:31px;--frozen-rank-width:31px;--ranking-school-width:calc(33% - 31px)}
+.demo-faculty-table .faculty-year-col{width:86px}
+.demo-faculty-table .faculty-score-col{width:96px}
+.demo-faculty-table>thead>tr>th:not(.numeric-col){text-align:left}
+.demo-faculty-table .numeric-col .sort-button{display:inline-flex;gap:3px;align-items:center;white-space:normal;text-align:right}
+.demo-faculty-table .program-row{cursor:default}
+.demo-faculty-table .school-cell{white-space:normal;overflow-wrap:anywhere}
+.demo-faculty-table .faculty-school-cell{white-space:nowrap}
+.demo-faculty-table .faculty-school-name{display:inline-block;max-width:calc(100% - 2.5em);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle}
+.demo-faculty-table .faculty-name{font-size:12px;font-weight:650}
+.demo-faculty-table .faculty-expand{display:inline-flex;vertical-align:middle;margin-right:4px;padding:0}
+.faculty-detail h3{margin:0 0 .5rem}
+.faculty-detail h4{margin:.8rem 0 .35rem}
+.faculty-detail p{margin:.35rem 0}
+.faculty-detail-links{display:flex;gap:.8rem;flex-wrap:wrap}
+.faculty-publications{margin:.3rem 0 0;padding-left:1.2rem;line-height:1.5}
+.faculty-publications li+li{margin-top:.25rem}
+.demo-faculty-table a.faculty-name{color:var(--demo-teal);text-underline-offset:2px}
+.demo-faculty-table .faculty-unit{display:block;color:var(--muted);font-size:10px}
+.faculty-country-flag{font-size:13px;white-space:nowrap}
+@media(max-width:640px){
+  .rankings-table.demo-faculty-table{--ranking-rank-width:36px;--frozen-rank-width:36px;--ranking-school-width:124px}
+}
+
+.demo-cohort-coverage {
+  margin: 0 .75rem .5rem;
+  color: var(--muted, #53646a);
+  font-size: .875rem;
+}
+.demo-score-coverage {
+  display: block;
+  color: var(--muted, #53646a);
+  font-size: .75rem;
+  font-weight: normal;
+  white-space: normal;
+}
+
+.demo-school-filter-button{display:inline-grid;place-items:center;vertical-align:middle;width:1.65rem;height:1.65rem;margin-inline-start:.2rem;padding:.24rem;border:1px solid transparent;border-radius:4px;background:transparent;color:inherit;cursor:pointer}
+.demo-school-filter-button svg{width:100%;height:100%}
+.demo-school-filter-button:is(:hover,.filter-active){color:var(--demo-teal);background:#eaf5f2;border-color:var(--demo-border)}
+.demo-school-filter-button:focus-visible{outline:2px solid var(--demo-teal);outline-offset:1px}
+.demo-school-filter-clear{display:inline-grid;place-items:center;vertical-align:middle;width:1.2rem;height:1.5rem;padding:0;border:0;background:transparent;color:var(--demo-teal);font-size:1.05rem;line-height:1;cursor:pointer}
+.demo-school-filter-clear[hidden]{display:none}
+.demo-school-filter-clear:focus-visible{outline:2px solid var(--demo-teal);outline-offset:1px}
+.demo-school-filter-popup{position:fixed;inset:auto;margin:0;width:min(20rem,calc(100vw - 16px));padding:.55rem;border:1px solid var(--demo-border);border-radius:.4rem;background:white;box-shadow:0 4px 18px #172d3526}
+.demo-placement-table #region-filter,.demo-placement-table .mobile-institution-label{display:none}
+.demo-school-filter-popup input,
+.demo-atlas-card #atlas-search[list] {
+  width: min(100%, 20rem);
+  min-height: 2.25rem;
+  border: 1px solid #aebfba;
+  border-radius: 4px;
+  padding: .35rem .55rem;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+.demo-atlas-card .ranking-card-header .search-field:has(#atlas-search[list]) {
+  width: min(100%, 18rem);
+}
+.demo-school-filter-popup input{width:100%;font-size:.875rem}
+
+
+/* One compact treatment for filters, secondary actions and data tables. */
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.caption-icon,#export-button.caption-icon){border:1px solid var(--demo-control-border);border-radius:var(--demo-control-radius);background:var(--demo-surface);color:var(--demo-teal);box-shadow:none}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.caption-icon,#export-button.caption-icon):hover{background:var(--demo-subtle);border-color:var(--demo-teal);color:var(--demo-teal)}
+.tenure-school-controls .tenure-selectors{padding:.5rem .65rem;background:var(--demo-subtle);border:1px solid var(--demo-border);border-radius:var(--demo-control-radius)}
+.tenure-school-controls .tenure-selectors>label{color:var(--demo-muted);font-size:.72rem;line-height:1.2}
+.tenure-school-controls .tenure-selectors :is(input,select){min-height:2rem;padding:.3rem .5rem;font-size:.85rem}
+.tenure-peer-editor{background:var(--demo-subtle)}
+.demo-table thead,.demo-main .table thead{background:#f6f8f7}
+.demo-table th,.demo-main .table th{color:var(--demo-muted);font-size:.75rem;line-height:1.3}
+.demo-table tr:hover td,.demo-main .table tr:hover td{background:var(--demo-subtle)}
+.demo-atlas-chart .peer-panel{border:0;border-radius:0;padding:0}
+
+/* Card content: one heading, body and label scale across views. */
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.results-card,.demo-section) {
+  --card-inset: 14px;
+  --card-copy: #344b53;
+}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.ranking-card-title,.demo-section h2,.demo-section>div>h3) {
+  color: var(--demo-ink);
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.demo-note,.demo-table-notes,.history-table-caption .ranking-caption,.demo-data-body) {
+  color: var(--card-copy, #344b53);
+  font-size: .875rem;
+  line-height: 1.55;
+}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.demo-table-notes,.demo-data-body) {
+  padding-inline: var(--card-inset, 14px);
+}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.demo-research-filters,.tenure-selectors)>label {
+  color: var(--demo-muted);
+  font-size: .75rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.demo-research-filters,.tenure-selectors) :is(input,select) {
+  min-height: 2rem;
+  padding: .3rem .5rem;
+  font-size: .875rem;
+  line-height: 1.3;
+}
+@media(max-width:640px) {
+  :is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.results-card,.demo-section) {--card-inset: 8px}
+  :is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.ranking-card-title,.demo-section h2,.demo-section>div>h3) {font-size: 14px}
+}
+/* Introductory and explanatory copy share the same card text style. */
+:is(.demo-tenure-card,.demo-atlas-card,.demo-research-card) :is(.demo-note,.demo-table-notes,.demo-table-notes p,.demo-table-notes [role=status]) {
+  color: var(--card-copy, #344b53);
+  font-size: .875rem;
+  font-weight: 400;
+  line-height: 1.55;
+}
+:is(.demo-tenure-card,.demo-atlas-card,.demo-research-card) > .demo-note {
+  margin: 0 var(--card-inset, 14px) 12px;
+}
+:is(.demo-tenure-card,.demo-atlas-card,.demo-research-card) .demo-table-notes p {margin: 0}
+:is(.demo-tenure-card,.demo-atlas-card,.demo-research-card) .demo-table-notes p+p {margin-top: .5rem}
+
+/* Shared table typography across rankings and tenure cases. */
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) .results-card > .table-scroll {
+  margin-inline: var(--card-inset, 14px);
+}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) .results-card > :is(.ranking-pagination,.demo-table-notes) {
+  margin-inline: var(--card-inset, 14px);
+}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) .results-card > .demo-table-notes {
+  padding-inline: 0;
+}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.rankings-table,.demo-table) {
+  --table-text: #344b53;
+  --table-heading: #4d6367;
+}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.rankings-table,.demo-table)>thead>tr>th {
+  color: var(--table-heading);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) :is(.rankings-table,.demo-table)>tbody>tr:not(.detail-row)>td {
+  color: var(--table-text);
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.4;
+  padding-block: 7px;
+}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) .rankings-table>tbody>tr:not(.detail-row) :is(.school-button,.faculty-name,.rank-number,.score-number,.graduate-number,.school-location,.research-unit-label,.faculty-unit,.region-cell) {
+  color: var(--table-text);
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.4;
+}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) .rankings-table>tbody>tr:not(.detail-row) :is(.school-button,.faculty-name) {font-weight: 600}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) .rankings-table>tbody>tr:not(.detail-row) :is(.school-location,.research-unit-label,.faculty-unit,.rank-number,.score-number,.graduate-number) {font-weight: 400}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) .rankings-table>tbody>tr:not(.detail-row) .active-score-column .score-number {color: var(--demo-teal);font-weight: 650}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) .rankings-table>tbody>.unit-row .school-button {font-weight: 400}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) .rankings-table>thead :is(.sort-button,.metric-sort-button) {font-size: inherit;line-height: inherit}
+:is(.demo-main,.demo-finance-phd-shell,.demo-faculty-shell) .rankings-table>thead th.active-score-column {color: var(--demo-teal)}
+/* Disclosures use the same body copy and card spacing as table notes. */
+.site-disclosures{color:#344b53;font-size:.875rem;line-height:1.55}
+.demo-research-shell{padding-bottom:0}
+
+.tenure-citation-heading{border-top:1px solid var(--demo-border);padding-top:14px}
+
+.demo-inline-warning{color:#a31d1d;font-weight:700}.demo-inline-warning a{color:inherit;text-decoration:underline}
+
+.research-page-heading{max-width:900px;margin:0 auto 1rem}
+.demo-main .research-page-heading h1{font-size:1.3rem;line-height:1.35;margin:0 0 .4rem}
+.demo-regional-research .demo-research-table{--ranking-rank-width:66px;--frozen-rank-width:66px}
+.research-global-rank{display:block;color:var(--demo-muted);white-space:nowrap;font-size:.6875rem}
+
+.school-suggestion-menu{position:fixed;inset:auto;margin:0;padding:.25rem;background:white;color:var(--demo-ink);border:1px solid var(--demo-control-border);border-radius:.35rem;box-shadow:0 4px 14px #172d3526}
+.school-suggestion-menu [role=option]{padding:.45rem .6rem;cursor:pointer}
+.school-suggestion-menu [role=option]:hover,.school-suggestion-menu [aria-selected=true]{background:var(--demo-subtle)}

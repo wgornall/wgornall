@@ -4,7 +4,7 @@
 const data=JSON.parse(document.getElementById('decade-data').textContent);
 const chart=document.getElementById('decade-chart'),plot=document.getElementById('decade-plot'),button=document.getElementById('decade-toggle');
 if(!chart||!plot||!button)return;
-const byId=new Map(data.schools.map(s=>[s.id,s]));
+const byId=new Map(data.schools.map(s=>[s.id,s])),note=document.getElementById('decade-chart-note');
 let limit=5,drawnCompact;
 const isCompact=()=>{const width=chart.parentElement?.clientWidth;return width?width<=640:Boolean(window.matchMedia?.('(max-width:640px)')?.matches);};
 const x=i=>130+172.25*i,y=rank=>82+(rank-1)*70;
@@ -40,6 +40,7 @@ function render(compact=isCompact()){
  document.getElementById('decade-desc').textContent='Top '+limit+' schools in each decade, from the 1980s through the partial 2020s. Only the latest top '+limit+' have name labels, all on the right. Lines break when a school leaves the displayed ranks.';
  const expanded=limit===10;button.setAttribute('aria-expanded',String(expanded));button.setAttribute('aria-label',expanded?'Show top 5 schools':'Show top 10 schools');
  document.getElementById('decade-toggle-icon').textContent=expanded?'−':'+';document.getElementById('decade-toggle-label').textContent=expanded?'Show top 5':'Show top 10';
+ if(note)note.textContent='Showing the top '+limit+' programs in each decade. You can change the number above.';
  bindMarks();
 }
 button.addEventListener('click',()=>{limit=limit===5?10:5;render();});
